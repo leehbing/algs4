@@ -26,6 +26,8 @@ import java.util.NoSuchElementException;
 
 
 /**
+ *  链表的方式实现栈
+ *
  *  The {@code Stack} class represents a last-in-first-out (LIFO) stack of generic items.
  *  It supports the usual <em>push</em> and <em>pop</em> operations, along with methods
  *  for peeking at the top item, testing if the stack is empty, and iterating through
@@ -142,7 +144,7 @@ public class Stack<Item> implements Iterable<Item> {
      *
      * @return an iterator to this stack that iterates through the items in LIFO order
      */
-    public Iterator<Item> iterator() {
+    public Iterator<Item> iterator() { //遍历的时候是后进先出
         return new ListIterator<Item>(first);
     }
 

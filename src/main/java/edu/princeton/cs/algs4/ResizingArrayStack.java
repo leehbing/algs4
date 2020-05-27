@@ -90,7 +90,7 @@ public class ResizingArrayStack<Item> implements Iterable<Item> {
      * Adds the item to this stack.
      * @param item the item to add
      */
-    public void push(Item item) {
+    public void push(Item item) { //如果满了，变成原来的2倍
         if (n == a.length) resize(2*a.length);    // double size of array if necessary
         a[n++] = item;                            // add item
     }
@@ -103,10 +103,10 @@ public class ResizingArrayStack<Item> implements Iterable<Item> {
     public Item pop() {
         if (isEmpty()) throw new NoSuchElementException("Stack underflow");
         Item item = a[n-1];
-        a[n-1] = null;                              // to avoid loitering
+        a[n-1] = null;                              // to avoid loitering， 避免对象游离
         n--;
         // shrink size of array if necessary
-        if (n > 0 && n == a.length/4) resize(a.length/2);
+        if (n > 0 && n == a.length/4) resize(a.length/2); // 如果数组只占1/4，将数组变成原来的1/2
         return item;
     }
 
@@ -125,7 +125,7 @@ public class ResizingArrayStack<Item> implements Iterable<Item> {
      * Returns an iterator to this stack that iterates through the items in LIFO order.
      * @return an iterator to this stack that iterates through the items in LIFO order.
      */
-    public Iterator<Item> iterator() {
+    public Iterator<Item> iterator() { // 迭代器：返回一个逆序迭代遍历这个数组
         return new ReverseArrayIterator();
     }
 

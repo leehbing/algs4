@@ -47,7 +47,7 @@ import java.util.NoSuchElementException;
  *  @param <Key> the generic type of key on this priority queue
  */
 
-public class MaxPQ<Key> implements Iterable<Key> {
+public class MaxPQ<Key> implements Iterable<Key> {//基于二叉堆实现的优先队列，支持删除并返回队列中键值最大的那个元素
     private Key[] pq;                    // store items at indices 1 to n
     private int n;                       // number of items on priority queue
     private Comparator<Key> comparator;  // optional comparator
@@ -97,7 +97,7 @@ public class MaxPQ<Key> implements Iterable<Key> {
      *
      * @param  keys the array of keys
      */
-    public MaxPQ(Key[] keys) {
+    public MaxPQ(Key[] keys) {//用keys[]中的元素创建一个优先队列
         n = keys.length;
         pq = (Key[]) new Object[keys.length + 1];
         for (int i = 0; i < n; i++)
@@ -174,10 +174,10 @@ public class MaxPQ<Key> implements Iterable<Key> {
      */
     public Key delMax() {
         if (isEmpty()) throw new NoSuchElementException("Priority queue underflow");
-        Key max = pq[1];
-        exch(1, n--);
-        sink(1);
-        pq[n+1] = null;     // to avoid loiterig and help with garbage collection
+        Key max = pq[1]; //从根结点得到最大元素
+        exch(1, n--);   //将其和最后一个结点交换
+        sink(1);    //恢复堆的有序性
+        pq[n+1] = null;     //放置对象游离 to avoid loiterig and help with garbage collection，
         if ((n > 0) && (n == (pq.length - 1) / 4)) resize(pq.length / 2);
         assert isMaxHeap();
         return max;

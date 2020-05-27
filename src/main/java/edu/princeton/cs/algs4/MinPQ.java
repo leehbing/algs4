@@ -45,7 +45,7 @@ import java.util.NoSuchElementException;
  *
  *  @param <Key> the generic type of key on this priority queue
  */
-public class MinPQ<Key> implements Iterable<Key> {
+public class MinPQ<Key> implements Iterable<Key> {//基于二叉堆实现的优先队列，支持删除并返回队列中键值最大的那个元素
     private Key[] pq;                    // store items at indices 1 to n
     private int n;                       // number of items on priority queue
     private Comparator<Key> comparator;  // optional comparator

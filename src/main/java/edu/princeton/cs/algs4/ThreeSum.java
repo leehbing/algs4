@@ -41,7 +41,7 @@ package edu.princeton.cs.algs4;
  *  @author Robert Sedgewick
  *  @author Kevin Wayne
  */
-public class ThreeSum {
+public class ThreeSum { // 暴力算法， 时间复杂度： O(N^3)，证明见习题1.4.1
 
     // Do not instantiate.
     private ThreeSum() { }

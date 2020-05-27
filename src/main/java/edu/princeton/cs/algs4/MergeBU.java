@@ -63,10 +63,11 @@ public class MergeBU {
      * @param a the array to be sorted
      */
     public static void sort(Comparable[] a) {
+        //进行lgN次两两归并
         int n = a.length;
-        Comparable[] aux = new Comparable[n];
-        for (int len = 1; len < n; len *= 2) {
-            for (int lo = 0; lo < n-len; lo += len+len) {
+        Comparable[] aux = new Comparable[n]; //归并所需的辅助数组
+        for (int len = 1; len < n; len *= 2) { //len子数组大小
+            for (int lo = 0; lo < n-len; lo += len+len) { //l0子数组索引
                 int mid  = lo+len-1;
                 int hi = Math.min(lo+len+len-1, n-1);
                 merge(a, aux, lo, mid, hi);

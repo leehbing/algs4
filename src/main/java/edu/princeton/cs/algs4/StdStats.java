@@ -210,7 +210,7 @@ public final class StdStats {
      * @return the average value in the array {@code a[]};
      *         {@code Double.NaN} if no such value
      */
-    public static double mean(int[] a) {
+    public static double mean(int[] a) { // 平均值
         validateNotNull(a);
 
         if (a.length == 0) return Double.NaN;
@@ -225,7 +225,7 @@ public final class StdStats {
      * @return the sample variance in the array {@code a[]};
      *         {@code Double.NaN} if no such value
      */
-    public static double var(double[] a) {
+    public static double var(double[] a) { // 采样方差
         validateNotNull(a);
 
         if (a.length == 0) return Double.NaN;
@@ -332,7 +332,7 @@ public final class StdStats {
      * @return the sample standard deviation in the array {@code a[]};
      *         {@code Double.NaN} if no such value
      */
-    public static double stddev(double[] a) {
+    public static double stddev(double[] a) { // 采样标准差
         validateNotNull(a);
         return Math.sqrt(var(a));
     }

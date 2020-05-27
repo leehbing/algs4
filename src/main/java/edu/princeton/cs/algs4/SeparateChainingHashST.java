@@ -40,11 +40,14 @@ package edu.princeton.cs.algs4;
  *  @author Robert Sedgewick
  *  @author Kevin Wayne
  */
+//基于拉链法实现的散列表
+//散列函数实现的符号表，处理碰撞的方法是 拉链法，
 public class SeparateChainingHashST<Key, Value> {
     private static final int INIT_CAPACITY = 4;
 
-    private int n;                                // number of key-value pairs
-    private int m;                                // hash table size
+    private int n;                                // 键值对总数
+    private int m;                                // 散列表的大小
+    // 维护了一条链表的数组，用的是SequentialSearchST
     private SequentialSearchST<Key, Value>[] st;  // array of linked-list symbol tables
 
 

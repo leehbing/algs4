@@ -82,7 +82,7 @@ package edu.princeton.cs.algs4;
 
 public class QuickFindUF {
     private int[] id;    // id[i] = component identifier of i
-    private int count;   // number of components
+    private int count;   // number of components    连通分量的数量
 
     /**
      * Initializes an empty union–find data structure with {@code n} sites
@@ -138,7 +138,7 @@ public class QuickFindUF {
      * @throws IllegalArgumentException unless
      *         both {@code 0 <= p < n} and {@code 0 <= q < n}
      */
-    public boolean connected(int p, int q) {
+    public boolean connected(int p, int q) { // 判断p和q是否连通
         validate(p);
         validate(q);
         return id[p] == id[q];
@@ -163,7 +163,7 @@ public class QuickFindUF {
         if (pID == qID) return;
 
         for (int i = 0; i < id.length; i++)
-            if (id[i] == pID) id[i] = qID;
+            if (id[i] == pID) id[i] = qID; // 遍历数组，将所有和ip[p]相等的元素的值变为id[q]
         count--;
     }
 
@@ -181,7 +181,7 @@ public class QuickFindUF {
         while (!StdIn.isEmpty()) {
             int p = StdIn.readInt();
             int q = StdIn.readInt();
-            if (uf.connected(p, q)) continue;
+            if (uf.connected(p, q)) continue;    // 如果连通则忽略
             uf.union(p, q);
             StdOut.println(p + " " + q);
         }

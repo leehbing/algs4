@@ -17,6 +17,7 @@ import java.util.Scanner;
 import java.util.regex.Pattern;
 
 /**
+ *   标准输入流
  *  The {@code StdIn} class provides static methods for reading strings
  *  and numbers from standard input.
  *  These functions fall into one of four categories:

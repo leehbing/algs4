@@ -35,7 +35,7 @@ import java.util.NoSuchElementException;
 /**
  *  The {@code Bag} class represents a bag (or multiset) of 
  *  generic items. It supports insertion and iterating over the 
- *  items in arbitrary order.
+ *  items in arbitrary order. //每次迭代顺序可能不一样
  *  <p>
  *  This implementation uses a singly linked list with a static nested class Node.
  *  See {@link LinkedBag} for the version from the
@@ -108,7 +108,7 @@ public class Bag<Item> implements Iterable<Item> {
      *
      * @return an iterator that iterates over the items in this bag in arbitrary order
      */
-    public Iterator<Item> iterator()  {
+    public Iterator<Item> iterator()  { //遍历的时候是后进先出
         return new ListIterator<Item>(first);  
     }
 

@@ -40,11 +40,12 @@ package edu.princeton.cs.algs4;
  *  @author Robert Sedgewick
  *  @author Kevin Wayne
  */
+//基于线性探测的散列表
 public class LinearProbingHashST<Key, Value> {
     private static final int INIT_CAPACITY = 4;
 
-    private int n;           // number of key-value pairs in the symbol table
-    private int m;           // size of linear probing table
+    private int n;           // number of key-value pairs in the symbol table，符号表中键值对的总数
+    private int m;           // size of linear probing table,线性探测表的大小
     private Key[] keys;      // the keys
     private Value[] vals;    // the values
 
@@ -140,7 +141,7 @@ public class LinearProbingHashST<Key, Value> {
         if (n >= m/2) resize(2*m);
 
         int i;
-        for (i = hash(key); keys[i] != null; i = (i + 1) % m) {
+        for (i = hash(key); keys[i] != null; i = (i + 1) % m) { //如果查到keys[i]=null，表示这个位置可以插入新元素
             if (keys[i].equals(key)) {
                 vals[i] = val;
                 return;

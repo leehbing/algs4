@@ -17,6 +17,8 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 /**
+ *  链表的方式实现队列
+ *
  *  The {@code Queue} class represents a first-in-first-out (FIFO)
  *  queue of generic items.
  *  It supports the usual <em>enqueue</em> and <em>dequeue</em>
@@ -137,7 +139,7 @@ public class Queue<Item> implements Iterable<Item> {
      *
      * @return an iterator that iterates over the items in this queue in FIFO order
      */
-    public Iterator<Item> iterator()  {
+    public Iterator<Item> iterator()  {  //遍历的时候是先进先出
         return new ListIterator<Item>(first);  
     }
 

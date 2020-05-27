@@ -289,7 +289,7 @@ public final class StdOut {
      * @param format the <a href = "http://docs.oracle.com/javase/7/docs/api/java/util/Formatter.html#syntax">format string</a>
      * @param args   the arguments accompanying the format string
      */
-    public static void printf(String format, Object... args) {
+    public static void printf(String format, Object... args) {//格式化输出
         out.printf(LOCALE, format, args);
         out.flush();
     }

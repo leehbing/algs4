@@ -57,7 +57,7 @@ import java.util.Arrays;
  *  @author Robert Sedgewick
  *  @author Kevin Wayne
  */
-public class ThreeSumFast {
+public class ThreeSumFast { //思想：先排序数组，再进行N(N-1)/2次二分查找，= NlogN + N(N-1)/2 * logN     ~ N^2logN
 
     // Do not instantiate.
     private ThreeSumFast() { }

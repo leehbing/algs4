@@ -26,6 +26,8 @@ import java.util.Scanner;
 import java.util.regex.Pattern;
 
 /**
+ * 可以从标准输入流，文件，url，socket读取
+ *
  *  <i>Input</i>. This class provides methods for reading strings
  *  and numbers from standard input, file input, URLs, and sockets. 
  *  <p>

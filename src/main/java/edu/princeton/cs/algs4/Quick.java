@@ -39,7 +39,7 @@ package edu.princeton.cs.algs4;
  *  @author Robert Sedgewick
  *  @author Kevin Wayne
  */
-public class Quick {
+public class Quick {   //快速排序
 
     // This class should not be instantiated.
     private Quick() { }
@@ -57,40 +57,37 @@ public class Quick {
     // quicksort the subarray from a[lo] to a[hi]
     private static void sort(Comparable[] a, int lo, int hi) { 
         if (hi <= lo) return;
-        int j = partition(a, lo, hi);
-        sort(a, lo, j-1);
-        sort(a, j+1, hi);
+        int j = partition(a, lo, hi); //切分
+        sort(a, lo, j-1);   //将左半部分排序
+        sort(a, j+1, hi);   //将右半部分排序
         assert isSorted(a, lo, hi);
     }
 
     // partition the subarray a[lo..hi] so that a[lo..j-1] <= a[j] <= a[j+1..hi]
     // and return the index j.
     private static int partition(Comparable[] a, int lo, int hi) {
-        int i = lo;
+        int i = lo;     //左右扫描指针
         int j = hi + 1;
-        Comparable v = a[lo];
+        Comparable v = a[lo];   //切分元素，每次都是选择第一个元素
         while (true) { 
 
-            // find item on lo to swap
+            // find item on lo to swap左右扫描，检查扫描是否结束并交换元素
             while (less(a[++i], v)) {
                 if (i == hi) break;
             }
-
             // find item on hi to swap
             while (less(v, a[--j])) {
-                if (j == lo) break;      // redundant since a[lo] acts as sentinel
+                if (j == lo) break;      //其实是冗余的，因为切分元素就是a[lo]，他不可能比自己小
             }
-
             // check if pointers cross
             if (i >= j) break;
-
             exch(a, i, j);
         }
 
-        // put partitioning item v at a[j]
+        // put partitioning item v at a[j] 将切分元素v放到正确的位置
         exch(a, lo, j);
 
-        // now, a[lo .. j-1] <= a[j] <= a[j+1 .. hi]
+        // now, a[lo .. j-1] <= a[j] <= a[j+1 .. hi]达到此目的
         return j;
     }
 

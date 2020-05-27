@@ -34,7 +34,7 @@ package edu.princeton.cs.algs4;
  *  @author Robert Sedgewick
  *  @author Kevin Wayne
  */
-public class Quick3way {
+public class Quick3way { //三向切分的快速排序
 
     // This class should not be instantiated.
     private Quick3way() { }

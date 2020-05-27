@@ -32,7 +32,7 @@ package edu.princeton.cs.algs4;
  *  @author Robert Sedgewick
  *  @author Kevin Wayne
  */
-public class TopM {   
+public class TopM {    //调用优先队列的例子
 
     // This class should not be instantiated.
     private TopM() { }
@@ -50,16 +50,16 @@ public class TopM {
 
         while (StdIn.hasNextLine()) {
             // Create an entry from the next line and put on the PQ. 
-            String line = StdIn.readLine();
+            String line = StdIn.readLine(); //比如： Turing      6/17/1990   644.08
             Transaction transaction = new Transaction(line);
-            pq.insert(transaction); 
+            pq.insert(transaction);  //放入优先队列中
 
             // remove minimum if m+1 entries on the PQ
             if (pq.size() > m) 
-                pq.delMin();
-        }   // top m entries are on the PQ
+                pq.delMin(); //如果优先队列中存在M+1个元素则删除其中最小的元素
+        }   // top m entries are on the PQ 这样最大的M个元素都在优先队列中,优先队列中存放这以降序排列的最大的M个交易
 
-        // print entries on PQ in reverse order
+        // print entries on PQ in reverse order 用栈以颠倒一下顺序
         Stack<Transaction> stack = new Stack<Transaction>();
         for (Transaction transaction : pq)
             stack.push(transaction);

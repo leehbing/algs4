@@ -46,7 +46,7 @@ import java.util.Comparator;
  *  @author Robert Sedgewick
  *  @author Kevin Wayne
  */
-public class Insertion {
+public class Insertion { //插入排序
 
     // This class should not be instantiated.
     private Insertion() { }
@@ -55,9 +55,10 @@ public class Insertion {
      * Rearranges the array in ascending order, using the natural order.
      * @param a the array to be sorted
      */
-    public static void sort(Comparable[] a) {
+    public static void sort(Comparable[] a) {//将a[]升序排列
         int n = a.length;
         for (int i = 0; i < n; i++) {
+            //将a[i]插入到a[i-1],a[i-2],a[i-3]..a[0]之中
             for (int j = i; j > 0 && less(a[j], a[j-1]); j--) {
                 exch(a, j, j-1);
             }
@@ -170,7 +171,7 @@ public class Insertion {
         return isSorted(a, 0, a.length);
     }
 
-    // is the array a[lo..hi) sorted
+    // is the array a[lo..hi) sorted ， 测试数组元素是否有序
     private static boolean isSorted(Comparable[] a, int lo, int hi) {
         for (int i = lo+1; i < hi; i++)
             if (less(a[i], a[i-1])) return false;

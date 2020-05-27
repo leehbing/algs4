@@ -94,7 +94,7 @@ public final class StdRandom {
      *
      * @param s the seed
      */
-    public static void setSeed(long s) {
+    public static void setSeed(long s) { //设置随机生成器的种子
         seed   = s;
         random = new Random(seed);
     }
@@ -113,7 +113,7 @@ public final class StdRandom {
      *
      * @return a random real number uniformly in [0, 1)
      */
-    public static double uniform() {
+    public static double uniform() { // 0到1之间的实数
         return random.nextDouble();
     }
 
@@ -124,7 +124,7 @@ public final class StdRandom {
      * @return a random integer uniformly between 0 (inclusive) and {@code n} (exclusive)
      * @throws IllegalArgumentException if {@code n <= 0}
      */
-    public static int uniform(int n) {
+    public static int uniform(int n) { // [0, n)之间的整数
         if (n <= 0) throw new IllegalArgumentException("argument must be positive: " + n);
         return random.nextInt(n);
     }
@@ -182,7 +182,7 @@ public final class StdRandom {
      * @throws IllegalArgumentException if {@code b <= a}
      * @throws IllegalArgumentException if {@code b - a >= Integer.MAX_VALUE}
      */
-    public static int uniform(int a, int b) {
+    public static int uniform(int a, int b) { // [a, b)之间的整数
         if ((b <= a) || ((long) b - a >= Integer.MAX_VALUE)) {
             throw new IllegalArgumentException("invalid range: [" + a + ", " + b + ")");
         }
@@ -197,7 +197,7 @@ public final class StdRandom {
      * @return a random real number uniformly in [a, b)
      * @throws IllegalArgumentException unless {@code a < b}
      */
-    public static double uniform(double a, double b) {
+    public static double uniform(double a, double b) { // [a, b)之间的实数
         if (!(a < b)) {
             throw new IllegalArgumentException("invalid range: [" + a + ", " + b + ")");
         }
@@ -213,7 +213,7 @@ public final class StdRandom {
      *         {@code false} with probability {@code 1 - p}
      * @throws IllegalArgumentException unless {@code 0} &le; {@code p} &le; {@code 1.0}
      */
-    public static boolean bernoulli(double p) {
+    public static boolean bernoulli(double p) { // 返回真的概率为p       伯努利概率（均匀分布的的概率）
         if (!(p >= 0.0 && p <= 1.0))
             throw new IllegalArgumentException("probability p must be between 0.0 and 1.0: " + p);
         return uniform() < p;
@@ -236,7 +236,7 @@ public final class StdRandom {
      * @return a random real number from a standard Gaussian distribution
      *         (mean 0 and standard deviation 1).
      */
-    public static double gaussian() {
+    public static double gaussian() { // 正态分布，期望值为0，标准差为1
         // use the polar form of the Box-Muller transform
         double r, x, y;
         do {
@@ -259,7 +259,7 @@ public final class StdRandom {
      * @return a real number distributed according to the Gaussian distribution
      *         with mean {@code mu} and standard deviation {@code sigma}
      */
-    public static double gaussian(double mu, double sigma) {
+    public static double gaussian(double mu, double sigma) {// 正态分布，期望值为mu，标准差为sigma
         return mu + sigma * gaussian();
     }
 
@@ -353,7 +353,7 @@ public final class StdRandom {
      * @throws IllegalArgumentException if sum of array entries is not (very nearly) equal to {@code 1.0}
      * @throws IllegalArgumentException unless {@code probabilities[i] >= 0.0} for each index {@code i}
      */
-    public static int discrete(double[] probabilities) {
+    public static int discrete(double[] probabilities) { // 根据离散概率随机返回的int值（出现i的概率为probabilities[i]）
         if (probabilities == null) throw new IllegalArgumentException("argument array is null");
         double EPSILON = 1E-14;
         double sum = 0.0;
@@ -452,7 +452,7 @@ public final class StdRandom {
      * @param  a the array to shuffle
      * @throws IllegalArgumentException if {@code a} is {@code null}
      */
-    public static void shuffle(double[] a) {
+    public static void shuffle(double[] a) { // 将数组a随机排序
         validateNotNull(a);
         int n = a.length;
         for (int i = 0; i < n; i++) {

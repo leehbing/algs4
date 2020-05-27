@@ -60,6 +60,7 @@ import java.util.NoSuchElementException;
  *  {@link SeparateChainingHashST}, and {@link LinearProbingHashST},
  *  <i>Algorithms, 4th Edition</i> by Robert Sedgewick and Kevin Wayne.
  */
+//基于有序数组实现的符号表
 public class BinarySearchST<Key extends Comparable<Key>, Value> {
     private static final int INIT_CAPACITY = 2;
     private Key[] keys;
@@ -151,7 +152,7 @@ public class BinarySearchST<Key extends Comparable<Key>, Value> {
      * @return the number of keys in the symbol table strictly less than {@code key}
      * @throws IllegalArgumentException if {@code key} is {@code null}
      */
-    public int rank(Key key) {
+    public int rank(Key key) { //针对有序数组keys[],可以采用二分查找法，这个是非递归版本的
         if (key == null) throw new IllegalArgumentException("argument to rank() is null"); 
 
         int lo = 0, hi = n-1; 
@@ -232,7 +233,7 @@ public class BinarySearchST<Key extends Comparable<Key>, Value> {
         }
 
         n--;
-        keys[n] = null;  // to avoid loitering
+        keys[n] = null;  // to avoid loitering,防止对象游离
         vals[n] = null;
 
         // resize if 1/4 full

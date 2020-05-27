@@ -63,10 +63,11 @@ import java.util.NoSuchElementException;
  *  @author Robert Sedgewick
  *  @author Kevin Wayne
  */
+//利用二叉查找树实现的符号表
 public class BST<Key extends Comparable<Key>, Value> {
     private Node root;             // root of BST
 
-    private class Node {
+    private class Node {//结点的定义
         private Key key;           // sorted by key
         private Value val;         // associated data
         private Node left, right;  // left and right subtrees
@@ -162,12 +163,13 @@ public class BST<Key extends Comparable<Key>, Value> {
     }
 
     private Node put(Node x, Key key, Value val) {
+        //如果key存在于以x为根结点的子树中则更新它的值，否则将以key和val为键值对的新结点插入到该子树中
         if (x == null) return new Node(key, val, 1);
         int cmp = key.compareTo(x.key);
         if      (cmp < 0) x.left  = put(x.left,  key, val);
         else if (cmp > 0) x.right = put(x.right, key, val);
         else              x.val   = val;
-        x.size = 1 + size(x.left) + size(x.right);
+        x.size = 1 + size(x.left) + size(x.right);//更新结点计数器的值
         return x;
     }
 
@@ -184,6 +186,7 @@ public class BST<Key extends Comparable<Key>, Value> {
     }
 
     private Node deleteMin(Node x) {
+        //不断深入跟结点的左子树直至遇见一个空链接，然后将指向该结点的链接指向该结点的右子树（只需要在递归调用中返回它的右链接即可）
         if (x.left == null) return x.right;
         x.left = deleteMin(x.left);
         x.size = size(x.left) + size(x.right) + 1;
@@ -251,8 +254,9 @@ public class BST<Key extends Comparable<Key>, Value> {
         return min(root).key;
     } 
 
-    private Node min(Node x) { 
-        if (x.left == null) return x; 
+    private Node min(Node x) {
+        //如果跟结点的左链接为空，那么一颗二叉查找树中最小的键就是跟结点，如果左链接非空，那么树中最小键就是左子树中的最小键
+        if (x.left == null) return x;
         else                return min(x.left); 
     } 
 
@@ -289,6 +293,8 @@ public class BST<Key extends Comparable<Key>, Value> {
     } 
 
     private Node floor(Node x, Key key) {
+        //如果给定的键key小于二叉查找树的根结点的键，那么<=key的最大键floor(key)一定在根结点的左子树中；
+        //如果给定的键key大于二叉查找树的根结点，那么只有当根结点右子树中存在<=key的结点时，<=key的最大键才会出现在右子树中，否则根结点就是<=key的最大键。
         if (x == null) return null;
         int cmp = key.compareTo(x.key);
         if (cmp == 0) return x;
@@ -357,6 +363,9 @@ public class BST<Key extends Comparable<Key>, Value> {
 
     // Return key of rank k. 
     private Node select(Node x, int k) {
+        //如果左子树中的结点树t大于k，就继续在左子树中查找排名为k的键；
+        //如果t=k，就返回根结点中的键
+        //如果t<k，就递归地在右子树中查找排名为（k-t-1）的键
         if (x == null) return null; 
         int t = size(x.left); 
         if      (t > k) return select(x.left,  k); 
@@ -378,6 +387,9 @@ public class BST<Key extends Comparable<Key>, Value> {
 
     // Number of keys in the subtree less than key.
     private int rank(Key key, Node x) {
+        //如果给定的键和根结点的键相等，就返回左子树中的结点总数t，
+        //如果给定的键小于根结点，返回该键在左子树中的排名
+        //如果给定的键大于根结点，返回t+1(根结点)加上它在右子树中的排名
         if (x == null) return 0; 
         int cmp = key.compareTo(x.key); 
         if      (cmp < 0) return rank(key, x.left); 

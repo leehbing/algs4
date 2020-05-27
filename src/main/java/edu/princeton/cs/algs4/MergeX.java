@@ -36,7 +36,7 @@ import java.util.Comparator;
  *  @author Robert Sedgewick
  *  @author Kevin Wayne
  */
-public class MergeX {
+public class MergeX { //自顶向下的归并排序 算法改进
     private static final int CUTOFF = 7;  // cutoff to insertion sort
 
     // This class should not be instantiated.
@@ -62,7 +62,7 @@ public class MergeX {
 
     private static void sort(Comparable[] src, Comparable[] dst, int lo, int hi) {
         // if (hi <= lo) return;
-        if (hi <= lo + CUTOFF) { 
+        if (hi <= lo + CUTOFF) { //归并排序的过程中，如果元素比较小，用插入排序，提高性能
             insertionSort(dst, lo, hi);
             return;
         }

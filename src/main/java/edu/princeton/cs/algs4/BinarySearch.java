@@ -40,6 +40,12 @@ import java.util.Arrays;
  *  @author Kevin Wayne
  */
 public class BinarySearch {
+    //第K次查找查询后，剩余待查询元素数量为N/(2^K)，可以看出N/(2^K)肯定是大于等于1，也就是N/(2^K)>=1，
+    // 我们计算时间复杂度是按照最坏的情况进行计算，也就是是查到剩余最后一个数才查到我们想要的数据，也就是
+    //N/(2^K)=1
+    //=>N=2^K
+    //=>K=log2N
+    //所以二分查找的时间复杂度为O(log2N)
 
     /**
      * This class should not be instantiated.
@@ -53,7 +59,7 @@ public class BinarySearch {
      * @param  key the search key
      * @return index of key in array {@code a} if present; {@code -1} otherwise
      */
-    public static int indexOf(int[] a, int key) {
+    public static int indexOf(int[] a, int key) { // 二分查找， 数组a必须已经排序
         int lo = 0;
         int hi = a.length - 1;
         while (lo <= hi) {

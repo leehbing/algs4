@@ -26,7 +26,7 @@ package edu.princeton.cs.algs4;
  *  @author Robert Sedgewick
  *  @author Kevin Wayne
  */
-public class RandomSeq { 
+public class RandomSeq { //伪随机数
 
     // this class should not be instantiated
     private RandomSeq() { }

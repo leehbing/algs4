@@ -39,8 +39,8 @@ import java.util.NoSuchElementException;
 public class ResizingArrayQueue<Item> implements Iterable<Item> {
     private Item[] q;       // queue elements
     private int n;          // number of elements on queue
-    private int first;      // index of first element of queue
-    private int last;       // index of next available slot
+    private int first;      // index of first element of queue，指向队列的开头
+    private int last;       // index of next available slot，指向队列的结尾
 
 
     /**
@@ -89,7 +89,7 @@ public class ResizingArrayQueue<Item> implements Iterable<Item> {
         // double size of array if necessary and recopy to front of array
         if (n == q.length) resize(2*q.length);   // double size of array if necessary
         q[last++] = item;                        // add item
-        if (last == q.length) last = 0;          // wrap-around
+        if (last == q.length) last = 0;          // wrap-around, 循环使用数组。
         n++;
     }
 

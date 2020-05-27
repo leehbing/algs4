@@ -54,6 +54,9 @@ package edu.princeton.cs.algs4;
  *  @author Robert Sedgewick
  *  @author Kevin Wayne
  */
+////基于无序链表实现的符号表
+    //向一个空表中插入N个不同的键需要～N^2/2次比较 = 1+2+3+4+….+N-1 =N(N-1)/2。
+    // 查找某个键，平均需要N/2
 public class SequentialSearchST<Key, Value> {
     private int n;           // number of key-value pairs
     private Node first;      // the linked list of key-value pairs

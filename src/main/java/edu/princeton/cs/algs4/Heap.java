@@ -33,7 +33,7 @@ package edu.princeton.cs.algs4;
  *  @author Robert Sedgewick
  *  @author Kevin Wayne
  */
-public class Heap {
+public class Heap { //堆排序----基于优先队列的思想
 
     // This class should not be instantiated.
     private Heap() { }

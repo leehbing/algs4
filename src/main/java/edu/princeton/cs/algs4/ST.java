@@ -50,7 +50,7 @@ import java.util.TreeMap;
  *  @param <Key> the generic type of keys in this symbol table
  *  @param <Value> the generic type of values in this symbol table
  */
-public class ST<Key extends Comparable<Key>, Value> implements Iterable<Key> {
+public class ST<Key extends Comparable<Key>, Value> implements Iterable<Key> { //符号表，类似于hashmap
 
     private TreeMap<Key, Value> st;
 
@@ -168,7 +168,7 @@ public class ST<Key extends Comparable<Key>, Value> implements Iterable<Key> {
      * @return the smallest key in this symbol table
      * @throws NoSuchElementException if this symbol table is empty
      */
-    public Key min() {
+    public Key min() {//最小的键
         if (isEmpty()) throw new NoSuchElementException("calls min() with empty symbol table");
         return st.firstKey();
     }
@@ -179,7 +179,7 @@ public class ST<Key extends Comparable<Key>, Value> implements Iterable<Key> {
      * @return the largest key in this symbol table
      * @throws NoSuchElementException if this symbol table is empty
      */
-    public Key max() {
+    public Key max() { //最大的键
         if (isEmpty()) throw new NoSuchElementException("calls max() with empty symbol table");
         return st.lastKey();
     }

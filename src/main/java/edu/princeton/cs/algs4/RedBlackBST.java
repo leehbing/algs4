@@ -66,7 +66,7 @@ import java.util.NoSuchElementException;
  *  @author Robert Sedgewick
  *  @author Kevin Wayne
  */
-
+//红黑树实现的平衡查找树
 public class RedBlackBST<Key extends Comparable<Key>, Value> {
 
     private static final boolean RED   = true;
@@ -79,7 +79,7 @@ public class RedBlackBST<Key extends Comparable<Key>, Value> {
         private Key key;           // key
         private Value val;         // associated data
         private Node left, right;  // links to left and right subtrees
-        private boolean color;     // color of parent link
+        private boolean color;     // color of parent link 由其父结点指向它的链接的颜色
         private int size;          // subtree count
 
         public Node(Key key, Value val, boolean color, int size) {
@@ -195,7 +195,8 @@ public class RedBlackBST<Key extends Comparable<Key>, Value> {
 
     // insert the key-value pair in the subtree rooted at h
     private Node put(Node h, Key key, Value val) { 
-        if (h == null) return new Node(key, val, RED, 1);
+        if (h == null)  //标准的插入操作，和父结点用红链接相连
+            return new Node(key, val, RED, 1);
 
         int cmp = key.compareTo(h.key);
         if      (cmp < 0) h.left  = put(h.left,  key, val); 
@@ -330,7 +331,7 @@ public class RedBlackBST<Key extends Comparable<Key>, Value> {
     ***************************************************************************/
 
     // make a left-leaning link lean to the right
-    private Node rotateRight(Node h) {
+    private Node rotateRight(Node h) { //右旋转
         // assert (h != null) && isRed(h.left);
         Node x = h.left;
         h.left = x.right;
@@ -343,7 +344,7 @@ public class RedBlackBST<Key extends Comparable<Key>, Value> {
     }
 
     // make a right-leaning link lean to the left
-    private Node rotateLeft(Node h) {
+    private Node rotateLeft(Node h) {//左旋转
         // assert (h != null) && isRed(h.right);
         Node x = h.right;
         h.right = x.left;

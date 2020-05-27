@@ -40,7 +40,7 @@ package edu.princeton.cs.algs4;
  *  @author Robert Sedgewick
  *  @author Kevin Wayne
  */
-public class Shell {
+public class Shell {//希尔排序
 
     // This class should not be instantiated.
     private Shell() { }

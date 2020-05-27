@@ -34,7 +34,7 @@ package edu.princeton.cs.algs4;
  *  @author Robert Sedgewick
  *  @author Kevin Wayne
  */
-public class Merge {
+public class Merge { //自顶向下的归并排序
 
     // This class should not be instantiated.
     private Merge() { }
@@ -42,6 +42,7 @@ public class Merge {
     // stably merge a[lo .. mid] with a[mid+1 ..hi] using aux[lo .. hi]
     private static void merge(Comparable[] a, Comparable[] aux, int lo, int mid, int hi) {
         // precondition: a[lo .. mid] and a[mid+1 .. hi] are sorted subarrays
+        // a[lo .. mid] 和 a[mid+1 .. hi]已经内部有序
         assert isSorted(a, lo, mid);
         assert isSorted(a, mid+1, hi);
 
@@ -67,9 +68,9 @@ public class Merge {
     private static void sort(Comparable[] a, Comparable[] aux, int lo, int hi) {
         if (hi <= lo) return;
         int mid = lo + (hi - lo) / 2;
-        sort(a, aux, lo, mid);
-        sort(a, aux, mid + 1, hi);
-        merge(a, aux, lo, mid, hi);
+        sort(a, aux, lo, mid); //将左半边排序
+        sort(a, aux, mid + 1, hi); //将右半边排序
+        merge(a, aux, lo, mid, hi);//归并结果
     }
 
     /**
