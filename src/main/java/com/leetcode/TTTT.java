@@ -1094,22 +1094,22 @@ public class TTTT {
         return i + 1;
     }
 
-    //560. 和为K的子数组
+    //560. 和为K的子数组  给定一个整数数组和一个整数 k，你需要找到该数组中和为 k 的连续的子数组的个数。
     //方法一：暴力法
     //时间复杂度：O(n^2)
     //空间复杂度：O(1)
     public static int subarraySum(int[] nums, int k) {
-        int m = 0;
+        int count = 0;
         for (int i = 0; i < nums.length; i++) {
             int sum = 0;
             for (int j = i; j < nums.length; j++) {
                 sum += nums[j];
                 if (sum == k) {
-                    m++;
+                    count++;
                 }
             }
         }
-        return m;
+        return count;
         //上面的方法换一种写法，
         //  2   4   3   8   3   6   4   8   2   4   3   5
         //         end            start
@@ -1149,9 +1149,9 @@ public class TTTT {
     // i     空  0   1   2   3   4   5   6   7   8   9
     //pre[i] 0   1   0   0   -1  0   1   2   4   5   6
     //       1   1  -1   0   -1  1   1   1   2   1   1         k=2
-    //                                  i
+    //                                   i
     //                                 pre[6]-k=0
-    //              则j=1，2，4都是符合的
+    //              则j=空，1，2，4都是符合的
     //时间复杂度：O(n)，其中 n 为数组的长度。我们遍历数组的时间复杂度为 O(n)，中间利用哈希表查询删除的复杂度均为O(1)，因此总时间复杂度为 O(n)。
     //空间复杂度：O(n)。哈希表在最坏情况下可能有 n 个不同的键值，因此需要 O(n) 的空间复杂度
     public static int subarraySum2(int[] nums, int k) {
@@ -1210,7 +1210,7 @@ public class TTTT {
             //遍历map
             for (int key : mp.keySet()) {
                 if ((k == 0 && (pre - key) == 0) || (k != 0 && (pre - key) % k == 0)) {
-                    count += mp.get(key); //这句话改成return true就不报超时了，可能如果是count += mp.get(key)，时间复杂度会变成O(n^2)力扣后台的限制了
+                    count += mp.get(key); //这句话改成return true就不报超时了，可能如果是count += mp.get(key)，时间复杂度会变成O(n^2)力扣后台的测试用例不通过
                 }
             }
             mp.put(prepre, mp.getOrDefault(prepre, 0) + 1);
@@ -1219,23 +1219,104 @@ public class TTTT {
     }
 
     //下面是官网的解答，也是基于前缀和，但是改的很优雅
+    //首先，取余%运算支持分配律，结合律，比如(a+b)%k=a%k+b%k,可以这么想，有整数k的部分先减掉，不影响后面的取余运算===》同余定理
     public static boolean checkSubarraySum2(int[] nums, int k) {
         int sum = 0;
         HashMap<Integer, Integer> map = new HashMap<>();
-        map.put(0, -1);
+        map.put(0, -1);//(sum,索引i)
         for (int i = 0; i < nums.length; i++) {
             sum += nums[i];
             if (k != 0)
-                sum = sum % k;
-            if (map.containsKey(sum)) {
-                if (i - map.get(sum) > 1)
+                sum = sum % k; //比如k=99，假设此时的sum=20=pre[i]
+            if (map.containsKey(sum)) { //如果之前的存在20，这样pre[i]-20=0, 0%99=0，正好整除
+                if (i - map.get(sum) > 1) //存在也不更新key对应的value，这样保证i - map.get(sum)会最大，也有可能成功
                     return true;
-            } else
-                map.put(sum, i); //把索引put进去
+            } else {
+                map.put(sum, i); //如果不存在20，则加进去(20 -> i)
+            }
         }
         return false;
     }
 
+    //974. 和可被 K 整除的子数组
+    public static int subarraysDivByK(int[] A, int K) {
+        //我的方法，前缀和
+        //时间复杂度：O(n^2), 提交上去会报超出时间限制，应该是时间复杂度太大了
+        //空间复杂度: O(n)
+        int[] sum = new int[A.length];
+        int temp = 0;
+        int count = 0;
+        for (int i = 0; i < A.length; i++) {
+            temp += A[i];
+            sum[i] = temp;
+        }
+        for (int i = A.length - 1; i >= 0; i--) {
+            for (int j = 0; j <= i; j++) { //j=i
+                if ((sum[i] - sum[j] + A[j]) % K == 0) count++;
+            }
+
+        }
+        return count;
+    }
+
+    //974
+    public static int subarraysDivByK2(int[] A, int K) {
+        //方法二，前缀和+hashMap
+        //时间复杂度：O(N)
+        //空间复杂度：O(min(N,K))，即hash表需要的空间，当 N≤K 时，最多有 N 个前缀和，因此哈希表中最多有 N+1个键值对；
+        // 当 N>K 时，最多有 K 个不同的余数，因此哈希表中最多有 K 个键值对。也就是说，哈希表需要的空间取决于 N 和 K 中的较小值。
+        //
+        //
+
+        int sum = 0;
+        int count = 0;
+        Map<Integer, Integer> map = new HashMap<>();
+        map.put(0, 1);//对于一开始的情况，下标 0 之前没有元素，可以认为前缀和为 0，个数为 1 个, 考虑了前缀和本身被 K 整除的情况
+        for (int i = 0; i < A.length; i++) {
+            sum += A[i];
+            // sum = sum % K;
+            //// !!!!注意 Java 取模的特殊性，当被除数为负数时取模结果为负数，需要纠正
+            sum = (sum % K + K) % K;
+
+            if (map.containsKey(sum)) {
+                count += map.get(sum);
+            }
+            map.put(sum, map.getOrDefault(sum, 0) + 1);
+
+        }
+        return count;
+    }
+
+    //724. 寻找数组的中心索引
+    public static int pivotIndex(int[] nums) {
+        //我的解法：前缀和+后缀和
+        //时间复杂度：O(n)
+        //空间复杂度：O(n)
+        int[] sumpre = new int[nums.length];
+        int sum1 = 0;
+        int[] sumpost = new int[nums.length];
+        int sum2 = 0;
+        for (int i = 0; i < nums.length; i++) {
+            sum1 += nums[i];
+            sumpre[i] = sum1;
+            sum2 += nums[nums.length - i - 1];
+            sumpost[nums.length - i - 1] = sum2;
+        }
+        for (int i = 0; i < nums.length; i++) {
+            if (sumpre[i] == sumpost[i]) return i;
+        }
+        return -1;
+    }
+
+    public int pivotIndex2(int[] nums) { //更简单的解法。。。
+        int sum = 0, leftsum = 0;
+        for (int x : nums) sum += x;
+        for (int i = 0; i < nums.length; ++i) {
+            if (leftsum == sum - leftsum - nums[i]) return i;
+            leftsum += nums[i];
+        }
+        return -1;
+    }
 
     //152. 乘积最大子数组
     public static int maxProduct(int[] nums) {
@@ -1476,33 +1557,6 @@ public class TTTT {
         // 先序遍历中「从 左边界+1+左子树节点数目 开始到 右边界」的元素就对应了中序遍历中「从 根节点定位+1 到 右边界」的元素
         root.right = buildTree(preorder, pIndex - inLeft + preLeft + 1, preRight, map, pIndex + 1, inRight);
         return root;
-    }
-
-
-    //974. 和可被 K 整除的子数组
-    public static int subarraysDivByK(int[] A, int K) {
-        //我的方法，前缀和
-        int[] sum = new int[A.length];
-        int temp = 0;
-        int count = 0;
-        for (int i = 0; i < A.length; i++) {
-            temp += A[i];
-            sum[i] = temp;
-        }
-
-        for (int i = A.length - 1; i >= 0; i--) {
-            for (int j = -1; j < i; j++) {
-                if (j == -1) {
-                    if ((sum[i] - 0) % K == 0) count++;
-                } else {
-                    if ((sum[i] - sum[j]) % K == 0) count++;
-
-                }
-            }
-
-        }
-        return count;
-
     }
 
 
