@@ -931,73 +931,7 @@ public class TTTT {
         return result;
     }
 
-    //136. 只出现一次的数字     给定一个非空整数数组，除了某个元素只出现一次以外，其余每个元素均出现两次。找出那个只出现了一次的元素。
-    //解法一：暴力查找
-    //两次循环，每次从数组中取一个数，记为cur，然后从剩下的数中查找，如果找不到，则cur即为要找的那个数。这种解法时间复杂度是 O(n^2)
-    //解法二：排序
-    //使用快排，复杂度 O(nlogn)
-    //解法三：
-    //利用 Hash 表，Time: O(n) Space: O(n)
-    //        Map<Integer, Integer> map = new HashMap<>();
-    //        for (Integer i : nums) {
-    //            Integer count = map.get(i);
-    //            count = count == null ? 1 : ++count;
-    //            map.put(i, count);
-    //        }
-    //        for (Integer i : map.keySet()) {
-    //            Integer count = map.get(i);
-    //            if (count == 1) return i;
-    //        }
-    //        return -1; // can't find it.
-    //解法五：使用集合Hashset存储数组中出现的所有数字，并计算数组中的元素之和。由于集合保证元素无重复，因此计算集合中的所有元素之和的两倍，即为每个元素出现两次的情况下的元素之和。由于数组中只有一个元素出现一次，其余元素都出现两次，因此用集合中的元素之和的两倍减去数组中的元素之和，剩下的数就是数组中只出现一次的数字。
-    //2×(a+b+c)−(a+a+b+b+c)=c ，时间复杂度：O(n),空间复杂度O(n)
-    //解法四：异或，牛逼的解法，善于题目中的已有信息！！！！, 时间复杂度O(n),空间复杂度O(1)
-    public static int singleNumber(int[] nums) {
-        int ans = nums[0];
-        if (nums.length > 1) {
-            for (int i = 1; i < nums.length; i++) {
-                ans = ans ^ nums[i];
-            }
-        }
-        return ans;
-    }
 
-    //137. 只出现一次的数字 II
-    //给定一个非空整数数组，除了某个元素只出现一次以外，其余每个元素均出现了三次。找出那个只出现了一次的元素。
-    //循环查找，hashmap，可以做到，但是时间复杂度不行
-    //官方解法，用复杂的位计算，比较复杂，暂时没看
-    public static int singleNumber137(int[] nums) {
-
-        return 0;
-    }
-
-
-    //268. 缺失数字
-    //给定一个包含 0, 1, 2, ..., n 中 n 个数的序列，找出 0 .. n 中没有出现在序列中的那个数。
-    //解法一，先快速排序，然后遍历
-    //时间复杂度：O(nlgn),由于排序的时间复杂度为 O(nlogn)，扫描数组的时间复杂度为 O(n)，因此总的时间复杂度为 O(nlogn)。
-    //空间复杂度：O(1) 或 O(n)。空间复杂度取决于使用的排序算法，根据排序算法是否进行原地排序（即不使用额外的数组进行临时存储）
-    public static int missingNumber(int[] nums) {
-        Arrays.sort(nums);
-        int last = nums[0];
-        if (last != 0) return 0;
-        for (int i = 1; i < nums.length; i++) {
-            if (nums[i] - last != 1) return last + 1;
-            last = nums[i];
-        }
-        return last + 1;
-        //解法2，Hash表， 将所有数子插入到hash表中，然后遍历0～n,看哪个不存在
-        //时间复杂度：O(n)。集合的插入操作的时间复杂度都是 O(1)，一共插入了 n 个数，时间复杂度为O(n)。
-        //      集合的查询操作的时间复杂度同样是 O(1)，最多查询 n+1 次，时间复杂度为 O(n)。因此总的时间复杂度为 O(n)。
-        //空间复杂度：O(n)。集合中会存储 n 个数，因此空间复杂度为O(n)。
-        //方法三：位运算^   异或满足结合律
-        //时间复杂度：O(n)。这里假设异或运算的时间复杂度是常数的，总共会进行 O(n)次异或运算，因此总的时间复杂度为 O(n)。
-        //空间复杂度：O(1)。算法中只用到了 O(1) 的额外空间，用来存储答案。
-        //方法四：数学公式 0+1+2+...n=n(n+1)/2,减去数组中所有数字的和就是缺失的数字
-        //时间复杂度：O(n)。求出数组中所有数的和的时间复杂度为 O(n)，高斯求和公式的时间复杂度为 O(1)，因此总的时间复杂度为 O(n)。
-        //空间复杂度：O(1)。算法中只用到了 O(1) 的额外空间，用来存储答案。
-
-    }
 
     //448. 找到所有数组中消失的数字
     public static List<Integer> findDisappearedNumbers(int[] nums) {

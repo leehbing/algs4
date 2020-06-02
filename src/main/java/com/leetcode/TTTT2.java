@@ -149,47 +149,7 @@ public class TTTT2 {
     }
 
 
-    //67. 二进制求和
-    public static String addBinary(String a, String b) {
-        //方法一：将 a 和 b 转换为十进制整数。求和。将求和结果转换为二进制整数。
-        //算法的时间复杂度为 \mathcal{O}(N + M)O(N+M)，但是该方法存在两个问题。
-        //
-        //在 Java 中，该方法受输入字符串 a 和 b 的长度限制。字符串长度太大时，不能将其转换为 Integer，Long 或者 BigInteger 类型。
-        //33 位 1，不能转换为 Integer。
-        //65 位 1，不能转换为 Long。
-        //500000001 位 1，不能转换为 BigInteger。
 
-        //return Integer.toBinaryString(Integer.parseInt(a, 2) + Integer.parseInt(b, 2));
-
-
-        //方法一：逐位计算    一种古老的经典算法，无需把数字转换成十进制，直接逐位计算和与进位即可
-        //初始进位 carry=0，如果数字 a 的最低位是 1，则将 1 加到进位carry；同理如果数字 b 的最低位是 1，则也将 1 加到进位。
-        // 此时最低位有三种情况：(00) (01) (11)
-        //
-        //然后将 carry 的最低位作为最低位的值，将 carry 的最高位移至下一位继续计算。
-        //重复上述步骤，直到数字 a 和 b 的每一位计算完毕。最后如果carry 的最高位不为 0，则将最高位添加到计算结果的末尾。
-        // 最后翻转结果得到求和结果。
-        int n = a.length(), m = b.length();
-        if (n < m) return addBinary(b, a);
-        int L = Math.max(n, m);
-
-        StringBuilder sb = new StringBuilder();
-        int carry = 0, j = m - 1;
-        for (int i = L - 1; i > -1; --i) {
-            if (a.charAt(i) == '1') ++carry;
-            if (j > -1 && b.charAt(j--) == '1') ++carry;
-
-            if (carry % 2 == 1) sb.append('1');
-            else sb.append('0');
-
-            carry /= 2;
-        }
-        if (carry == 1) sb.append('1');
-        sb.reverse();
-
-        return sb.toString();
-
-    }
 
     //1431. 拥有最多糖果的孩子
     public List<Boolean> kidsWithCandies(int[] candies, int extraCandies) {
@@ -209,8 +169,5 @@ public class TTTT2 {
         return result;
     }
 
-    public static void main(String[] args) {
 
-
-    }
 }
