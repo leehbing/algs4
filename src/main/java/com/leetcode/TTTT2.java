@@ -150,7 +150,6 @@ public class TTTT2 {
 
 
 
-
     //1431. 拥有最多糖果的孩子
     public List<Boolean> kidsWithCandies(int[] candies, int extraCandies) {
         int max = candies[0];
@@ -168,6 +167,19 @@ public class TTTT2 {
 
         return result;
     }
+
+    //面试题64. 求1+2+…+n
+    //求 1+2+...+n ，要求不能使用乘除法、for、while、if、else、switch、case等关键字及条件判断语句（A?B:C）。
+    //方法1：递归
+    public int sumNums(int n) {
+        //如果可以用判断语句，很快就能想到用递归，但是不能用判断语句
+        //return n == 0 ? 0 : n + sumNums(n - 1);
+        int sum = n;
+        boolean flag = n>0 && (sum += sumNums(n-1))>0; //巧妙利用"短路"特性 当n大于0时 就继续递归 否则停止递归 return 前面的累加值
+        return sum;
+    }
+
+
 
 
 }
