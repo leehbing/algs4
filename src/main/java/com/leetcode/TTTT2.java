@@ -10,26 +10,7 @@ import java.util.*;
  * @Author: lihongbing
  */
 public class TTTT2 {
-    //394. 字符串解码        给定一个经过编码的字符串，返回它解码后的字符串。
-    //s = "3[a]2[bc]", 返回 "aaabcbc".
-    //s = "3[a2[c]]", 返回 "accaccacc".
-    //s = "2[abc]3[cd]ef", 返回 "abcabccdcdcdef".
-    //
-    //我的方法，这个和利用栈计算表达式一样的，参考edu.princeton.cs.algs4.Evaluate
-    public static String decodeString(String s) {
-        //操作数栈
-        Stack<String> ops = new Stack<String>();
-        //运算符栈
-        Stack<Character> vals = new Stack<Character>();
-        //先考虑数字都是个位数
-        for (int i = 0; i < s.length(); i++) {
 
-
-        }
-
-
-        return null;
-    }
 
 
     //198. 打家劫舍

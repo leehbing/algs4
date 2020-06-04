@@ -191,190 +191,6 @@ public class TTTT {
 
 //    }
 
-    //9. 回文数
-    //输入: 121
-    //输出: true
-    public boolean isPalindrome(int x) {
-        char[] str = String.valueOf(x).toCharArray();
-        int length = str.length;
-        for (int i = 0; i < length / 2; i++) {
-            if (str[i] != str[length - i - 1]) return false;
-        }
-        return true;
-    }
-
-    //125. 验证回文串
-    //给定一个字符串，验证它是否是回文串，只考虑字母和数字字符，可以忽略字母的大小写。
-    //说明：本题中，我们将空字符串定义为有效的回文串。
-    //输入: "A man, a plan, a canal: Panama"
-    //输出: true
-    //A~Z = 65~90 , a~z = 97~122 , 0~9 = 48~57
-    //思想，也很简单，遍历一遍就行，不符合条件的指针向前或后走一步，然后继续比较
-    public static boolean isPalindrome(String s) {
-        for (int i = 0, j = s.length() - 1; i < j; ) {
-            int t1 = convert(s.charAt(i));
-            int t2 = convert(s.charAt(j));
-            if (t1 == 0) {
-                i++;
-                continue;
-            }
-            if (t2 == 0) {
-                j--;
-                continue;
-            }
-            if (t1 != t2) return false;
-            i++;
-            j--;
-
-        }
-        return true;
-    }
-
-    public static int convert(char t) {
-        if (t >= 'a' && t <= 'z') {
-            return t;
-        } else if (t >= 'A' && t <= 'Z') {
-            return t + 32;//转换成小写
-        } else if (t >= '0' && t <= '9') {
-            return t;
-        } else {
-            return 0;
-        }
-    }
-
-
-    //680. 验证回文字符串 Ⅱ
-    //给定一个非空字符串 s，最多删除一个字符。判断是否能成为回文字符串。
-    //利用首尾指针先找到字符不一样的位置记为i,j
-    //然后分两种情况，i向后一步或者j向前一步，再继续对比，只要有一个成功就是成功
-    //时间复杂度：O(n)
-    //空间复杂度：O(1)
-    public static boolean validPalindrome(String s) {
-        int i = 0;
-        int j = s.length() - 1;
-
-        int m = 0;
-        int n = 0;
-        for (; i < j; i++, j--) {
-            if (s.charAt(i) != s.charAt(j)) {
-                break;
-            }
-        }
-
-        //分两种情况，i向后一步或者j向前一步，然后继续对比，只要有一个成功就成功
-        boolean res1 = true;
-        boolean res2 = true;
-
-        for (m = i + 1, n = j; m < n; m++, n--) {
-            if (s.charAt(m) != s.charAt(n)) {
-                res1 = false;
-                break;
-            }
-        }
-        if (res1) return true;
-        for (m = i, n = j - 1; m < n; m++, n--) {
-            if (s.charAt(m) != s.charAt(n)) {
-                res2 = false;
-                break;
-            }
-        }
-        return res2;
-
-
-    }
-
-
-    public static String convert(String s, int numRows) {
-        if (numRows == 1) return s;
-        //定义numRow维数组
-        String[] res = new String[numRows];
-        for (int i = 0; i < res.length; i++) {
-            res[i] = "";
-        }
-        int j = 0;
-        int m = 0;
-        for (int i = 0; i < s.length(); i++) {
-            if (i % (numRows - 1) == 0) {
-                m++;
-            }
-            if (m % 2 != 0) {
-                res[j] += (s.charAt(i));
-                j++;
-            } else {
-                res[j] += (s.charAt(i));
-                j--;
-            }
-        }
-
-        String result = "";
-        for (int n = 0; n < numRows; n++) {
-            System.out.println(res[n]);
-            result += (res[n]);
-        }
-        return result;
-    }
-
-//字符          数值
-//I             1
-//V             5
-//X             10
-//L             50
-//C             100
-//D             500
-//M             1000
-    //I 可以放在 V (5) 和 X (10) 的左边，来表示 4 和 9。
-    //X 可以放在 L (50) 和 C (100) 的左边，来表示 40 和 90。 
-    //C 可以放在 D (500) 和 M (1000) 的左边，来表示 400 和 900。
-
-    public static int romanToInt(String s) {
-        Map map = new HashMap<Character, Integer>();
-        map.put('I', 1);
-        map.put('V', 5);
-        map.put('X', 10);
-        map.put('L', 50);
-        map.put('C', 100);
-        map.put('D', 500);
-        map.put('M', 1000);
-        int result = 0;
-        char cur, last = 0;
-        for (int i = s.length() - 1; i >= 0; i--) {
-            cur = s.charAt(i);
-            if (((last == 'V' || last == 'X') && cur == 'I')
-                    || ((last == 'L' || last == 'C') && cur == 'X')
-                    || ((last == 'D' || last == 'M') && cur == 'C')
-            ) {
-                result -= Integer.parseInt(map.get(cur).toString());
-            } else {
-                result += Integer.parseInt(map.get(cur).toString());
-            }
-            last = cur;
-        }
-
-        return result;
-
-
-    }
-
-    private int getValue(char ch) {
-        switch (ch) {
-            case 'I':
-                return 1;
-            case 'V':
-                return 5;
-            case 'X':
-                return 10;
-            case 'L':
-                return 50;
-            case 'C':
-                return 100;
-            case 'D':
-                return 500;
-            case 'M':
-                return 1000;
-            default:
-                return 0;
-        }
-    }
 
     //204. 计数质数 统计所有小于非负整数 n 的质数的数量。
     //一般思维，判断一个数x是否是质数，遍历2～sqrt(x)，判断能否被x整除，这样判断一个数字x的时间复杂度就是O(x^0.5)，找出所有的复杂度就是O(n^1.5)
@@ -436,30 +252,6 @@ public class TTTT {
     }
 
 
-    public static ListNode mergeTwoLists(ListNode l1, ListNode l2) {
-        ListNode dummyHead = new ListNode(0);
-        ListNode p = dummyHead;
-        int cur = 0;
-        while (l1 != null || l2 != null) {
-            if (l1 == null) {
-                cur = l2.val;
-                l2 = l2.next;
-            } else if (l2 == null) {
-                cur = l1.val;
-                l1 = l1.next;
-            } else if (l1.val < l2.val) {
-                cur = l1.val;
-                l1 = l1.next;
-            } else if (l1.val >= l2.val) {
-                cur = l2.val;
-                l2 = l2.next;
-            }
-            p.next = new ListNode(cur);
-            p = p.next;
-        }
-        return dummyHead.next;
-    }
-
     public static int strStr(String haystack, String needle) {
         if (haystack.isEmpty() && needle.isEmpty()) return 0;
         if (needle.isEmpty()) return 0;
@@ -481,6 +273,9 @@ public class TTTT {
 
     //56. 合并区间
     //如果我们按照区间的左端点排序，那么在排完序的列表中，可以合并的区间一定是连续的。
+    //时间复杂度：O(nlogn)，其中 n 为区间的数量。除去排序的开销，我们只需要一次线性扫描，所以主要的时间开销是排序的 O(nlogn)。
+    //空间复杂度：O(logn)，其中 n 为区间的数量。这里计算的是存储答案之外，使用的额外空间。O(logn) 即为排序所需要的空间复杂度。
+    //
     public static int[][] merge(int[][] intervals) {
         // 先按照区间起始位置排序，下面方法调用的是归并排序
         Arrays.sort(intervals, (v1, v2) -> v1[0] - v2[0]);
@@ -500,131 +295,35 @@ public class TTTT {
         return Arrays.copyOf(res, idx + 1);
     }
 
-    //242. 有效的字母异位词
-    //法1.通过将 s 的字母重新排列成 t 来生成变位词。因此，如果 t 是 s 的变位词，对两个字符串进行排序将产生两个相同的字符串。
-    // 此外，如果 s 和 t 的长度不同，t 不能是 s 的变位词，我们可以提前返回。
-    //时间复杂度：O(nlogn)，假设 n 是 s 的长度，排序成本 O(nlogn) 和比较两个字符串的成本 O(n)。排序时间占主导地位，总体时间复杂度为O(nlogn)。
-    //空间复杂度：O(1)，空间取决于排序实现，如果使用 heapsort，通常需要 O(1)辅助空间。注意，在 Java 中，toCharArray() 制作了一个字符串的拷贝，所以它花费 O(n) 额外的空间，但是我们忽略了这一复杂性分析，因为：
-    //  这依赖于语言的细节。
-    //  这取决于函数的设计方式。例如，可以将函数参数类型更改为 char[]。
-    public static boolean isAnagram(String s, String t) {
-        if (s.length() != t.length()) {
-            return false;
+    //986. 区间列表的交集
+    //给定两个由一些闭区间组成的列表，每个区间列表都是成对不相交的，并且已经排序。
+    //返回这两个区间列表的交集。
+    //时间复杂度：O(M+N)，其中 M, N 分别是数组 A 和 B 的长度。
+    //空间复杂度：O(M+N)，答案中区间数量的上限。
+    //
+    public int[][] intervalIntersection(int[][] A, int[][] B) {
+        List<int[]> ans = new ArrayList();
+        int i = 0, j = 0;
+
+        while (i < A.length && j < B.length) {
+            // Let's check if A[i] intersects B[j].
+            // lo - the startpoint of the intersection
+            // hi - the endpoint of the intersection
+            int lo = Math.max(A[i][0], B[j][0]);
+            int hi = Math.min(A[i][1], B[j][1]);
+            if (lo <= hi)
+                ans.add(new int[]{lo, hi});
+
+            // Remove the interval with the smallest endpoint
+            if (A[i][1] < B[j][1])
+                i++;
+            else
+                j++;
         }
-        char[] str1 = s.toCharArray();
-        char[] str2 = t.toCharArray();
-        Arrays.sort(str1);
-        Arrays.sort(str2);
-        return Arrays.equals(str1, str2);
+
+        return ans.toArray(new int[ans.size()][]);
     }
 
-    //242. 有效的字母异位词
-    //法2.哈希表
-    // 为了检查 t 是否是 s 的重新排列，我们可以计算两个字符串中每个字母的出现次数并进行比较。
-    // 因为 s 和 t 都只包含 a-z的字母，所以一个简单的 26 位计数器表就足够了。
-    //我们需要两个计数器数表进行比较吗？实际上不是，因为我们可以用一个计数器表计算 s 字母的频率，用 t 减少计数器表中的每个字母的计数器，
-    // 然后检查计数器是否回到零。
-    public static boolean isAnagram2(String s, String t) {
-        if (s.length() != t.length()) {
-            return false;
-        }
-        int[] counter = new int[26];
-        for (int i = 0; i < s.length(); i++) {
-            counter[s.charAt(i) - 'a']++;
-            counter[t.charAt(i) - 'a']--;
-        }
-        for (int count : counter) {
-            if (count != 0) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    //49. 字母异位词分组
-    public List<List<String>> groupAnagrams(String[] strs) {
-        //思想：把数组strs里面的每一个string先排序，然后把整个字符串数组string排序，最后就相当于是split一下，
-        //有一个很大的问题：最后出来的结果内容中的字符串不是原先的字符串了，所以这个思想有问题！
-//        String[] strs1 = new String[strs.length];
-//        for (int i = 0; i < strs.length; i++) {
-//            char[] temp = strs[i].toCharArray();
-//            Arrays.sort(temp);
-//            strs1[i] = String.valueOf(temp);
-//        }
-//        Arrays.sort(strs1);
-//        List<List<String>> result = new ArrayList<List<String>>();
-//        String last = null;
-//        int j = -1;
-//        for (int i = 0; i < strs1.length; i++) {
-//            String cur = strs1[i];
-//            if (!cur.equals(last)) {
-//                List<String> list = new ArrayList<String>();
-//                result.add(list);
-//                list.add(cur);
-//                j++;
-//            } else {
-//                result.get(j).add(cur);
-//            }
-//            last = cur;
-//        }
-        //思想，用一个辅助数组，一次遍历，但是确定当前扫描到的字符串放到那个分组里面，需要用到查找
-        //时间复杂度：遍历每个字符串，每个字符串都需要排序，还得查找分组位置（如果用hashmap，这个时间是常数），与官方的方法一类似，它使用了hashmap稍微简洁点，
-        //时间复杂度：O(NKlogK)，其中 N 是 strs 的长度，而 K 是 strs 中字符串的最大长度。当我们遍历每个字符串时，外部循环具有的复杂度为 O(N)。
-        // 然后，我们在 O(KlogK) 的时间内对每个字符串排序。
-        //空间复杂度：O(NK)，排序存储在 result 中的全部信息内容。
-        List<List<String>> result = new ArrayList<List<String>>();
-        List<String> aux = new ArrayList<>();
-        for (int i = 0; i < strs.length; i++) {
-            String cur = strs[i];
-            char[] chars = cur.toCharArray();
-            Arrays.sort(chars);
-            String temp = String.valueOf(chars);
-            int m = aux.indexOf(temp);
-            int n = m;
-            if (m == -1) {
-                aux.add(temp);
-                n = aux.size() - 1;
-            }
-            if (n >= result.size()) {
-                List<String> list = new ArrayList<>();
-                result.add(list);
-                list.add(cur);
-            } else {
-                result.get(n).add(cur);
-            }
-        }
-        return result;
-    }
-
-
-    //438. 找到字符串中所有字母异位词
-    public static List<Integer> findAnagrams(String s, String p) {
-        List<Integer> result = new ArrayList<>();
-        for (int i = 0; i < s.length(); i++) {
-            if (s.length() - i < p.length()) break;
-
-            String temp = s.substring(i, i + p.length());
-
-            //判断temp和p是否是字母异位词即可
-            int[] counter = new int[26];
-            for (int j = 0; j < p.length(); j++) {
-                counter[p.charAt(j) - 'a']++;
-                counter[temp.charAt(j) - 'a']--;
-            }
-            boolean flag = true;
-            for (int count : counter) {
-                if (count != 0) {
-                    flag = false;
-                    break;
-                }
-            }
-            if (flag) {
-                result.add(i);
-            }
-        }
-
-        return result;
-    }
 
     //215. 数组中的第K个最大元素
     public static int findKthLargest(int[] nums, int k) {
@@ -789,148 +488,6 @@ public class TTTT {
         //2. 解法2：快速选择 + 3-way-partition
         //3. 解法3：快速选择 + 3-way-partition + 虚地址
     }
-
-
-    //206. 反转链表
-    public static ListNode reverseList(ListNode head) {
-        //方法一：增加两个指针，遍历的时候保留临时指针
-        //时间复杂度：O(n)，假设 n 是列表的长度，时间复杂度是 O(n)。
-        //空间复杂度：O(1)
-        ListNode pre = null;
-        ListNode next = head;
-        while (next != null) {
-            ListNode temp = next.next; //必须
-            next.next = pre;
-            pre = next;
-            next = temp;
-        }
-        return pre;
-
-    }
-
-    //206. 反转链表
-    public ListNode reverseList2(ListNode head) {
-        //方法二：递归思想：https://leetcode-cn.com/problems/reverse-linked-list/solution/fan-zhuan-lian-biao-by-leetcode/
-        //递归比较难以理解，看评论：看了半个小时可算是把这个递归看懂了！
-        // 不妨假设链表为1，2，3，4，5。按照递归，当执行reverseList（5）的时候返回了5这个节点，reverseList(4)中的p就是5这个节点，
-        // 我们看看reverseList（4）接下来执行完之后，5->next = 4, 4->next = null。这时候返回了p这个节点，也就是链表5->4->null，
-        // 接下来执行reverseList（3），代码解析为4->next = 3,3->next = null，这个时候p就变成了，5->4->3->null, reverseList(2),
-        // reverseList(1)依次类推，p就是:5->4->3->2->1->null
-        //时间复杂度：O(n)，假设 nn 是列表的长度，那么时间复杂度为 O(n)。
-        //空间复杂度：O(n)，由于使用递归，将会使用隐式栈空间。递归深度可能会达到 n 层。
-        if (head == null || head.next == null) return head;
-        ListNode p = reverseList(head.next);
-        head.next.next = head;
-        head.next = null;
-        return p;
-    }
-
-    //92. 反转链表 II      反转从位置 m 到 n 的链表。请使用一趟扫描完成反转。
-    public static ListNode reverseBetween(ListNode head, int m, int n) {
-        //思想：计数器，将要反转的部分截取出来反转，然后在拼回去
-        //比如输入 1 -> 2 -> 3 -> 4 -> 5 -> null     2,4
-        //        n1   p         q    n2
-        //首先扫描一遍链表，利用p,q记录m和n对应的位置，n1和n2记录m-1和n+1的位置
-        //然后将q.next=null，针对p这个子链表进行反转，最后再拼接回去
-        //时间复杂度：第一次会扫描一遍整个链表，然后会扫描一遍子链表[m,n] ，O(l+n-m),其实达不到题目所要求的只扫描一遍的要求。
-        int i = 0;
-        ListNode cur = head;
-        ListNode p = head;
-        ListNode q = null;
-
-        ListNode n1 = null;
-        ListNode n2 = null;
-
-        while (cur != null) {
-            i++;
-            if (i == m - 1) n1 = cur;
-            if (i == m) p = cur; //肯定不为空
-            if (i == n) q = cur; //肯定不为空
-            if (i == n + 1) n2 = cur;
-            cur = cur.next;
-        }
-
-
-        q.next = null;
-        //将p反转，同题目206
-        ListNode pre = null;
-        ListNode next = p;
-
-        while (next != null) {
-            ListNode temp = next.next;
-            next.next = pre;
-            pre = next;
-            next = temp;
-        }
-
-        if (n1 != null) {
-            n1.next = pre;
-        } else {
-            head = pre;
-        }
-        p.next = n2;
-
-
-        return head;
-    }
-    ////思路：head表示需要反转的头节点，pre表示需要反转头节点的前驱节点
-    // 同时我们也需要设置一个哑节点dummy，因为m=1时，我们可以也有前驱节点，剩余部分看代码即可。
-    //    //我们需要反转n-m次，我们将head的next节点移动到需要反转链表部分的首部，需要反转链表部分剩余节点依旧保持相对顺序即可
-    //反转的过程中，有点像头插法。
-    //    //比如1->2->3->4->5,m=1,n=5
-    //    //第一次反转：1(head) 2(next) 3 4 5 反转为 2 1 3 4 5
-    //    //第二次反转：2 1(head) 3(next) 4 5 反转为 3 2 1 4 5
-    //    //第三次发转：3 2 1(head) 4(next) 5 反转为 4 3 2 1 5
-    //    //第四次反转：4 3 2 1(head) 5(next) 反转为 5 4 3 2 1
-    //    ListNode* reverseBetween(ListNode* head, int m, int n) {
-    //        ListNode *dummy=new ListNode(-1);
-    //        dummy->next=head;
-    //        ListNode *pre=dummy;
-    //        for(int i=1;i<m;++i)pre=pre->next;
-    //        head=pre->next;
-    //        for(int i=m;i<n;++i){
-    //            ListNode *nxt=head->next;
-    //            //head节点连接nxt节点之后链表部分，也就是向后移动一位
-    //            head->next=nxt->next;
-    //            //nxt节点移动到需要反转链表部分的首部
-    //            nxt->next=pre->next;
-    //            pre->next=nxt;//pre继续为需要反转头节点的前驱节点
-    //        }
-    //        return dummy->next;
-    //    }
-
-    //234. 回文链表    请判断一个链表是否为回文链表。要求空间复杂度达到O(1)
-    //输入: 1->2->2->1
-    //输出: true
-    //方法一，最简单的方法是，将值复制到数组中后用双指针法
-    //时间复杂度：O(n)
-    //空间复杂度：O(n)
-    //方法二，递归，空间复杂度还是O(n)，太复杂了，可以看官网
-    //方法三，将链表的后半部分反转（修改链表结构），然后将前半部分和后半部分进行比较。比较完成后我们应该将链表恢复原样。
-    // 虽然不需要恢复也能通过测试用例，因为使用该函数的人不希望链表结构被更改。
-    //          空间复杂度O(1)
-    public static boolean isPalindrome(ListNode head) {
-        if (head == null) return true;
-
-        // Find the end of first half and reverse second half.
-        ListNode firstHalfEnd = Utils.endOfFirstHalf(head); //通过快慢指针法找到前半部分的尾节点
-        ListNode secondHalfStart = reverseList(firstHalfEnd.next);
-
-        // Check whether or not there is a palindrome.
-        ListNode p1 = head;
-        ListNode p2 = secondHalfStart;
-        boolean result = true;
-        while (result && p2 != null) {
-            if (p1.val != p2.val) result = false;
-            p1 = p1.next;
-            p2 = p2.next;
-        }
-
-        // Restore the list and return the result.
-        firstHalfEnd.next = reverseList(secondHalfStart);
-        return result;
-    }
-
 
 
     //448. 找到所有数组中消失的数字
@@ -1173,6 +730,7 @@ public class TTTT {
     }
 
     //974. 和可被 K 整除的子数组
+    //方法一
     public static int subarraysDivByK(int[] A, int K) {
         //我的方法，前缀和
         //时间复杂度：O(n^2), 提交上去会报超出时间限制，应该是时间复杂度太大了
@@ -1193,7 +751,7 @@ public class TTTT {
         return count;
     }
 
-    //974
+    //方法二
     public static int subarraysDivByK2(int[] A, int K) {
         //方法二，前缀和+hashMap
         //时间复杂度：O(N)
@@ -1276,138 +834,6 @@ public class TTTT {
         return result;
     }
 
-    //98. 验证二叉搜索树
-    //定义：如果该二叉树的左子树不为空，则左子树上所有节点的值均小于它的根节点的值； 若它的右子树不空，则右子树上所有节点的值均大于它的根节点的值；它的左右子树也为二叉搜索树。
-    //方法一：中序遍历有序即可
-    //时间复杂度：O(n)
-    //空间复杂度：O(n)
-    public static boolean isValidBST(TreeNode root) {
-        List<Integer> res = new ArrayList<>();
-        inorderScan(root, res);
-        if (res.size() <= 1) return true;
-        for (int i = 1; i < res.size(); i++) {
-            if (res.get(i - 1) >= res.get(i)) return false;
-        }
-        return true;
-
-    }
-
-
-    //94. 二叉树的中序遍历
-    //递归很简单，但是题目要求用迭代来解决
-    //方法一：递归
-    //时间复杂度：O(n)。递归函数 T(n) = 2*T(n/2)+1
-    //空间复杂度：递归的底层用栈来存储之后需要再次访问的节点，最坏情况下需要空间O(n)，平均情况为O(logn)。
-    public static List<Integer> inorderTraversal(TreeNode root) {
-        List<Integer> res = new ArrayList<>();
-        inorderScan(root, res);
-        return res;
-    }
-
-    public static void inorderScan(TreeNode node, List<Integer> res) {
-        if (node == null) return;
-        inorderScan(node.left, res);
-        res.add(node.val);
-        inorderScan(node.right, res);
-    }
-
-    //方法二：基于栈的遍历，迭代,本质上是在模拟递归
-    //本方法的策略就是模拟递归的过程的，使用了栈。
-    public List<Integer> inorderTraversal2(TreeNode root) {
-        List<Integer> res = new ArrayList<>();
-        Stack<TreeNode> stack = new Stack<>();
-        TreeNode curr = root;
-        while (curr != null || !stack.isEmpty()) {
-            while (curr != null) { //尽可能的将这个节点的左子树压入Stack，此时栈顶的元素是最左侧的元素，其目的是找到一个最小单位的子树(也就是最左侧的一个节点)，并且在寻找的过程中记录了来源，才能返回上层,同时在返回上层的时候已经处理完毕左子树了。。
-                stack.push(curr);
-                curr = curr.left;
-            }
-            curr = stack.pop();
-            res.add(curr.val); //当处理完最小单位的子树时，返回到上层处理了中间节点。（如果把整个左中右的遍历都理解成子树的话，就是处理完 左子树->中间(就是一个节点)->右子树）
-            curr = curr.right;//如果有右节点，其也要进行中序遍历
-        }
-        return res;
-    }
-    //方法三：二叉树的莫里斯遍历  ，将空间复杂度降到O(1)      ==》没看
-
-    //144. 二叉树的前序遍历
-    //方法一：递归
-    public List<Integer> preorderTraversal(TreeNode root) {
-        List<Integer> res = new ArrayList<>();
-        preorderScan(root, res);
-        return res;
-    }
-
-    public static void preorderScan(TreeNode node, List<Integer> res) {
-        if (node == null) return;
-        res.add(node.val);
-        preorderScan(node.left, res);
-        preorderScan(node.right, res);
-    }
-
-    //方法二：基于栈的遍历， 迭代, 本质上是在模拟递归
-    //时间复杂度：访问每个节点恰好一次，时间复杂度为 O(N) ，其中 N 是节点的个数，也就是树的大小。
-    //空间复杂度：取决于树的结构，最坏情况存储整棵树，因此空间复杂度是 O(N)。
-    public List<Integer> preorderTraversal2(TreeNode root) {
-        Stack<TreeNode> stack = new Stack<>();
-        LinkedList<Integer> output = new LinkedList<>();
-        if (root == null) {
-            return output;
-        }
-        stack.add(root);
-        while (!stack.isEmpty()) {
-            TreeNode node = stack.pop();
-            output.add(node.val);
-            if (node.right != null) { //先打印左子树，然后右子树。所以先加入Stack的就是右子树，然后左子树
-                stack.push(node.right);
-            }
-            if (node.left != null) {
-                stack.push(node.left);
-            }
-        }
-        return output;
-    }
-
-    //方法三：二叉树的莫里斯遍历(前序/中序/后序都可以)，将空间复杂度降到O(1)      ==》没看
-
-    //145. 二叉树的后序遍历
-    //方法一：递归
-    public static List<Integer> postorderTraversal(TreeNode root) {
-        List<Integer> res = new ArrayList<>();
-        postorderScan(root, res);
-        return res;
-    }
-
-    public static void postorderScan(TreeNode node, List<Integer> res) {
-        if (node == null) return;
-        postorderScan(node.left, res);
-        postorderScan(node.right, res);
-        res.add(node.val);
-    }
-
-    //方法二：迭代
-    //从根节点开始依次迭代，弹出栈顶元素输出到输出列表中，然后依次压入它的所有孩子节点，按照从上到下、从左至右的顺序依次压入栈中。
-    //因为深度优先搜索后序遍历的顺序是从下到上、从左至右，所以需要将输出列表逆序输出。
-    public List<Integer> postorderTraversal2(TreeNode root) {
-        Stack<TreeNode> stack = new Stack<>();
-        LinkedList<Integer> output = new LinkedList<>();
-        if (root == null) {
-            return output;
-        }
-        stack.push(root);
-        while (!stack.isEmpty()) {
-            TreeNode node = stack.pop();
-            output.addFirst(node.val);
-            if (node.left != null) {
-                stack.push(node.left);
-            }
-            if (node.right != null) {
-                stack.push(node.right);
-            }
-        }
-        return output;
-    }
-
 
     //1295. 统计位数为偶数的数字
     //方法一：将每一个数子转换为字符串，然后判断字符串中含有的字符个数
@@ -1434,63 +860,92 @@ public class TTTT {
         return count;
     }
 
-    //105. 从前序与中序遍历序列构造二叉树
-    //根据一棵树的前序遍历与中序遍历构造二叉树。
-    //注意:
-    //你可以假设树中没有重复的元素。
+    //599. 两个列表的最小索引总和
+    //假设Andy和Doris想在晚餐时选择一家餐厅，并且他们都有一个表示最喜爱餐厅的列表，每个餐厅的名字用字符串表示。
+    //
+    //你需要帮助他们用最少的索引和找出他们共同喜爱的餐厅。 如果答案不止一个，则输出所有答案并且不考虑顺序。 你可以假设总是存在一个答案。
+    //方法一：暴力法
+    //时间复杂度：O(m+n)
+    //空间复杂度：O(m)
+    public String[] findRestaurant(String[] list1, String[] list2) {
+        Map<String, Integer> map1 = new HashMap<>();
+//        Map<Integer, String> result = new HashMap<>();
+        List<String> result = new ArrayList<>();
+        int index = Integer.MAX_VALUE;
+        for (int i = 0; i < list1.length; i++) {
+            map1.put(list1[i], i);
+        }
+        for (int i = 0; i < list2.length; i++) {
+            if (map1.containsKey(list2[i])) {
+                if (i + map1.get(list2[i]) < index) {
+                    result.clear();
+                    result.add(list2[i]);
+                    index = i + map1.get(list2[i]);
+                } else if (i + map1.get(list2[i]) == index) {
+                    result.add(list2[i]);
+                }
 
-    //前序遍历：     [根节点], [         左子树的前序遍历结果        ], [         右子树的前序遍历结果          ]
-    //                 ↑      ↑                                 ↑    ↑                                  ↑
-    //              preleft preleft+1        pIndex-inLeft+preLeft  pIndex-inLeft+preLeft+1         preRight
-    //
-    //中序遍历：     [         左子树的前序遍历结果        ], [根节点], [         右子树的前序遍历结果          ]
-    //               ↑                                ↑      ↑       ↑                                  ↑
-    //              inleft                       pIndex-1   pIndex  pIndex+1                         inRight
-    //
-    //要我们在中序遍历中定位到根节点，那么我们就可以分别知道左子树和右子树中的节点数目。
-    // 由于同一颗子树的前序遍历和中序遍历的长度显然是相同的，因此我们就可以对应到前序遍历的结果中，对上述形式中的所有左右括号进行定位。
-    //这样一来，我们就知道了左子树的前序遍历和中序遍历结果，以及右子树的前序遍历和中序遍历结果，
-    // 我们就可以递归地对构造出左子树和右子树，再将这两颗子树接到根节点的左右位置。
-    //细节：在中序遍历中对根节点进行定位时，一种简单的方法是直接扫描整个中序遍历的结果并找出根节点，
-    // 但这样做的时间复杂度较高。我们可以考虑使用哈希映射（HashMap）来帮助我们快速地定位根节点。
-    // 对于哈希映射中的每个键值对，键表示一个元素（节点的值），值表示其在中序遍历中的出现位置。
-    // 在构造二叉树的过程之前，我们可以对中序遍历的列表进行一遍扫描，就可以构造出这个哈希映射。在此后构造二叉树的过程中，我们就只需要 O(1) 的时间对根节点进行定位了。
-    //
-    //时间复杂度：O(n)，其中 n 是树中的节点个数。
-    //空间复杂度：O(n)，除去返回的答案需要的O(n) 空间之外，我们还需要使用 O(n) 的空间存储哈希映射，以及 O(h)（其中 h 是树的高度）的空间表示递归时栈空间。这里 h < n，所以总空间复杂度为 O(n)。
-    public TreeNode buildTree(int[] preorder, int[] inorder) {
-        int preLen = preorder.length;
-        int inLen = inorder.length;
-        if (preLen != inLen) {
-            throw new RuntimeException("Incorrect input data.");
+            }
         }
-        // 构造哈希映射，帮助我们快速定位根节点
-        Map<Integer, Integer> map = new HashMap<Integer, Integer>(preLen);
-        for (int i = 0; i < inLen; i++) {
-            map.put(inorder[i], i);
-        }
-        return buildTree(preorder, 0, preLen - 1, map, 0, inLen - 1);
+        return result.toArray(new String[0]);
+
     }
 
-    public TreeNode buildTree(int[] preorder, int preLeft, int preRight, Map<Integer, Integer> map, int inLeft, int inRight) {
-        if (preLeft > preRight || inLeft > inRight) {
-            return null;
+    //238. 除自身以外数组的乘积
+    //给你一个长度为 n 的整数数组 nums，其中 n > 1，返回输出数组 output ，其中 output[i] 等于 nums 中除 nums[i] 之外其余各元素的乘积。
+    //提示：题目数据保证数组之中任意元素的全部前缀元素和后缀（甚至是整个数组）的乘积都在 32 位整数范围内。
+    //
+    //说明: 请不要使用除法，且在 O(n) 时间复杂度内完成此题。
+    //方法一：利用前缀乘积和后缀乘积
+    //时间复杂度：O(n)
+    //空间复杂度：O(n)
+    public int[] productExceptSelf(int[] nums) {
+        int[] pres = new int[nums.length];
+        int[] posts = new int[nums.length];
+        pres[0] = 1;
+        posts[nums.length - 1] = 1;
+        int pretemp = 1;
+        int postemp = 1;
+        for (int i = 1; i < nums.length; i++) {
+            pretemp *= nums[i - 1];
+            pres[i] = pretemp;
+            postemp *= nums[nums.length - i];
+            posts[nums.length - i - 1] = postemp;
         }
-        // 前序遍历中的第一个节点就是根节点
-        int rootVal = preorder[preLeft];
-        // 在中序遍历中定位根节点
-        int pIndex = map.get(rootVal);
+        int[] result = new int[nums.length];
+        for (int i = 0; i < nums.length; i++) {
+            result[i] = pres[i] * posts[i];
+        }
 
-        // 先把根节点建立出来
-        TreeNode root = new TreeNode(rootVal);
+        return result;
+    }
 
-        // 递归地构造左子树，并连接到根节点
-        // 先序遍历中「从 左边界+1 开始的 size_left_subtree」个元素就对应了中序遍历中「从 左边界 开始到 根节点定位-1」的元素
-        root.left = buildTree(preorder, preLeft + 1, pIndex - inLeft + preLeft, map, inLeft, pIndex - 1);
-        // 递归地构造右子树，并连接到根节点
-        // 先序遍历中「从 左边界+1+左子树节点数目 开始到 右边界」的元素就对应了中序遍历中「从 根节点定位+1 到 右边界」的元素
-        root.right = buildTree(preorder, pIndex - inLeft + preLeft + 1, preRight, map, pIndex + 1, inRight);
-        return root;
+    //方法二：空间复杂度 O(1) 的方法
+    //思路
+    //尽管上面的方法已经能够很好的解决这个问题，但是空间复杂度并不为常数。
+    //由于输出数组不算在空间复杂度内，那么我们可以将 L 或 R 数组用输出数组来计算。先把输出数组当作 L 数组来计算，然后再动态构造 R 数组得到结果。让我们来看看基于这个思想的算法。
+    //
+    public int[] productExceptSelf2(int[] nums) {
+        int length = nums.length;
+        int[] answer = new int[length];
+
+        // answer[i] 表示索引 i 左侧所有元素的乘积
+        // 因为索引为 '0' 的元素左侧没有元素， 所以 answer[0] = 1
+        answer[0] = 1;
+        for (int i = 1; i < length; i++) {
+            answer[i] = nums[i - 1] * answer[i - 1];
+        }
+
+        // R 为右侧所有元素的乘积
+        // 刚开始右边没有元素，所以 R = 1
+        int R = 1;
+        for (int i = length - 1; i >= 0; i--) {
+            // 对于索引 i，左边的乘积为 answer[i]，右边的乘积为 R
+            answer[i] = answer[i] * R;
+            // R 需要包含右边所有的乘积，所以计算下一个结果时需要将当前值乘到 R 上
+            R *= nums[i];
+        }
+        return answer;
     }
 
 
