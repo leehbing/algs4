@@ -81,7 +81,7 @@ package edu.princeton.cs.algs4;
  */
 
 public class QuickFindUF {
-    private int[] id;    // id[i] = component identifier of i
+    private int[] id;    // id[i] = component identifier of i，触点i的父结点
     private int count;   // number of components    连通分量的数量
 
     /**
@@ -153,15 +153,15 @@ public class QuickFindUF {
      * @throws IllegalArgumentException unless
      *         both {@code 0 <= p < n} and {@code 0 <= q < n}
      */
-    public void union(int p, int q) {
+    public void union(int p, int q) {//将p和q归并到相同的分量中
         validate(p);
         validate(q);
         int pID = id[p];   // needed for correctness
         int qID = id[q];   // to reduce the number of array accesses
 
-        // p and q are already in the same component
+        // 如果p和q已经在相同的分量中，则不需要采取任何行动
         if (pID == qID) return;
-
+        //将p的分量重命名为q的名称
         for (int i = 0; i < id.length; i++)
             if (id[i] == pID) id[i] = qID; // 遍历数组，将所有和ip[p]相等的元素的值变为id[q]
         count--;

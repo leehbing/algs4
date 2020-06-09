@@ -79,8 +79,9 @@ package edu.princeton.cs.algs4;
  *  @author Robert Sedgewick
  *  @author Kevin Wayne
  */
+//加权quick-union算法
 public class WeightedQuickUnionUF {
-    private int[] parent;   // parent[i] = parent of i
+    private int[] parent;   // parent[i] = parent of i，父链接数组
     private int[] size;     // size[i] = number of sites in subtree rooted at i
     private int count;      // number of components
 

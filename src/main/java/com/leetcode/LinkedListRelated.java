@@ -1,8 +1,6 @@
 package com.leetcode;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by IntelliJ IDEA
@@ -151,6 +149,7 @@ public class LinkedListRelated {
         firstHalfEnd.next = reverseList(secondHalfStart);
         return result;
     }
+
     //160. 相交链表
     //两个链表是相交的，求相交的结点
     //方法一：暴力法
@@ -190,8 +189,6 @@ public class LinkedListRelated {
         return null;
     }
     //方法三：双指针法，官方还有一种解法
-
-
 
 
     //21. 合并两个有序链表
@@ -256,4 +253,118 @@ public class LinkedListRelated {
         if (p2 < n)
             System.arraycopy(nums2, p2, nums1, p1 + p2, m + n - p1 - p2);
     }
+
+    //141. 环形链表
+    //给定一个链表，判断链表中是否有环。你能用 O(1)（即，常量）内存解决此问题吗？
+    //
+    //为了表示给定链表中的环，我们使用整数 pos 来表示链表尾连接到链表中的位置（索引从 0 开始）。 如果 pos 是 -1，则在该链表中没有环。
+    //方法一：利用hashmap
+    //时间复杂度：O(n)
+    //空间复杂度：O(n),因为要存储map（存的是ListNode的饮用）
+    public boolean hasCycle(ListNode head) {
+        Map<ListNode, Integer> map = new HashMap();
+        ListNode p = head;
+        while (p != null) {
+            if (map.containsKey(p)) {
+                return true;
+            } else {
+                map.put(p, 1);
+            }
+            p = p.next;
+
+        }
+        return false;
+
+    }
+
+    //方法二：双指针，快慢指针
+    //过使用具有 不同速度 的快、慢两个指针遍历链表，空间复杂度可以被降低至 O(1)。慢指针每次移动一步，而快指针每次移动两步。
+    //
+    //如果列表中不存在环，最终快指针将会最先到达尾部，此时我们可以返回 false。
+    //现在考虑一个环形链表，把慢指针和快指针想象成两个在环形赛道上跑步的运动员（分别称之为慢跑者与快跑者）。而快跑者最终一定会追上慢跑者。这是为什么呢？
+    // 考虑下面这种情况（记作情况 A）- 假如快跑者只落后慢跑者一步，在下一次迭代中，它们就会分别跑了一步或两步并相遇。
+    //
+    //其他情况又会怎样呢？例如，我们没有考虑快跑者在慢跑者之后两步或三步的情况。但其实不难想到，因为在下一次或者下下次迭代后，又会变成上面提到的情况 A。
+    //时间复杂度：O(n)
+    //空间复杂度：O(1)
+    public boolean hasCycle2(ListNode head) {
+        if (head == null || head.next == null) {
+            return false;
+        }
+        ListNode slow = head;
+        ListNode fast = head.next;
+        while (slow != fast) {
+            if (fast == null || fast.next == null) {
+                return false;
+            }
+            slow = slow.next;
+            fast = fast.next.next;
+        }
+        return true;
+    }
+
+    //142. 环形链表 II
+    //给定一个链表，返回链表开始入环的第一个节点。 如果链表无环，则返回 null。
+    //
+    //为了表示给定链表中的环，我们使用整数 pos 来表示链表尾连接到链表中的位置（索引从 0 开始）。 如果 pos 是 -1，则在该链表中没有环。
+    //
+    //说明：不允许修改给定的链表   ，你是否可以不用额外空间解决此题？
+    //方法一：利用hashmap
+    //时间复杂度：O(n)
+    //空间复杂度：O(n),因为要存储map（存的是ListNode的饮用）
+    public ListNode detectCycle(ListNode head) {
+        Map<ListNode, Integer> map = new HashMap();
+        ListNode p = head;
+        while (p != null) {
+            if (map.containsKey(p)) {
+                return p;
+            } else {
+                map.put(p, 1);
+            }
+            p = p.next;
+
+        }
+        return null;
+    }
+    //方法二：快慢指针
+    //快慢指针跑圈，可以看看官方怎么解答的
+
+
+    //202. 快乐数
+    //编写一个算法来判断一个数 n 是不是快乐数。
+    //
+    //「快乐数」定义为：对于一个正整数，每一次将该数替换为它每个位置上的数字的平方和，然后重复这个过程直到这个数变为 1，也可能是 无限循环 但始终变不到 1。如果 可以变为  1，那么这个数就是快乐数。
+    //
+    //如果 n 是快乐数就返回 True ；不是，则返回 False 。
+    //输入：19
+    //输出：true
+    //解释：
+    //12 + 92 = 82
+    //82 + 22 = 68
+    //62 + 82 = 100
+    //12 + 02 + 02 = 1
+    //根据我们的探索，我们猜测会有以下三种可能。  ==》环形链表
+    //最终会得到 1。
+    //最终会进入循环。
+    //值会越来越大，最后接近无穷大。       这种情况不可能发生
+    private int getNext(int n) {
+        int totalSum = 0;
+        while (n > 0) {
+            int d = n % 10;
+            n = n / 10;
+            totalSum += d * d;
+        }
+        return totalSum;
+    }
+
+    public boolean isHappy(int n) {
+        Set<Integer> seen = new HashSet<>();
+        while (n != 1 && !seen.contains(n)) {
+            seen.add(n);
+            n = getNext(n);
+        }
+        return n == 1;
+    }
+
+
 }

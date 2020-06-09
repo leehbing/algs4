@@ -25,6 +25,8 @@ package edu.princeton.cs.algs4;
 
 
 /**
+ *  并查集 Union-find
+ *
  *  The {@code UF} class represents a <em>union–find data type</em>
  *  (also known as the <em>disjoint-sets data type</em>).
  *  It supports the <em>union</em> and <em>find</em> operations,
@@ -97,9 +99,9 @@ package edu.princeton.cs.algs4;
 
 public class UF {
 
-    private int[] parent;  // parent[i] = parent of i
+    private int[] parent;  // parent[i] = parent of i，以触点作为索引,这个触点的根结点
     private byte[] rank;   // rank[i] = rank of subtree rooted at i (never more than 31)
-    private int count;     // number of components
+    private int count;     // number of components  连通分量的数量
 
     /**
      * Initializes an empty union–find data structure with {@code n} sites

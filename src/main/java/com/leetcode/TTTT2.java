@@ -12,7 +12,6 @@ import java.util.*;
 public class TTTT2 {
 
 
-
     //198. 打家劫舍
     //给定一个代表每个房屋存放金额的非负整数数组，计算你 不触动警报装置的情况下 ，一夜之内能够偷窃到的最高金额。
     //典型的动态规划
@@ -130,6 +129,51 @@ public class TTTT2 {
     }
 
 
+    //面试题46. 把数字翻译成字符串
+    //给定一个数字，我们按照如下规则把它翻译为字符串：0 翻译成 “a” ，1 翻译成 “b”，……，11 翻译成 “l”，……，25 翻译成 “z”。
+    // 一个数字可能有多个翻译。请编程实现一个函数，用来计算一个数字有多少种不同的翻译方法。
+    //
+    //
+    //方法一：动态规划
+    //思路和算法
+    //首先我们来通过一个例子理解一下这里「翻译」的过程：我们来尝试翻译「14021402」。
+    //
+    //分成两种情况：
+    //
+    //首先我们可以把每一位单独翻译，即 [1,4,0,2]，翻译的结果是 beac
+    //然后我们考虑组合某些连续的两位：
+    //[14,0,2]，翻译的结果是 oac。
+    //[1,40,2]，这种情况是不合法的，因为 40 不能翻译成任何字母。
+    //[1,4,02]，这种情况也是不合法的，含有前导零的两位数不在题目规定的翻译规则中，那么 [14,02] 显然也是不合法的。
+    //那么我们可以归纳出翻译的规则，字符串的第 i 位置：
+    //可以单独作为一位来翻译
+    //如果第i−1 位和第 i 位组成的数字在 10 到 25 之间，可以把这两位连起来翻译
+    //到这里，我们发现它和「198. 打家劫舍」非常相似。我们可以用 f(i) 表示以第 i 位结尾的前缀串翻译的方案数，考虑第 i 位单独翻译和与前一位连接起来再翻译对 f(i) 的贡献。单独翻译对 f(i) 的贡献为 f(i−1)；如果第 i−1 位存在，并且第 i−1 位和第 i 位形成的数字 x 满足 10≤x≤25，那么就可以把第 i−1 位和第 i 位连起来一起翻译，对 f(i) 的贡献为 f(i−2)，否则为 0。我们可以列出这样的动态规划转移方程：
+    //f(i)=f(i−1)+f(i−2)[i−1≥0,10≤x≤25]
+    //边界条件是 f(−1)=0，f(0)=1。方程中 [c] 的意思是 c 为真的时候[c]=1，否则[c]=0。
+    //有了这个方程我们不难给出一个时间复杂度为 O(n)，空间复杂度为 O(n) 的实现。考虑优化空间复杂度：这里的 f(i) 只和它的前两项f(i−1) 和f(i−2) 相关，
+    // 我们可以运用「滚动数组」思想把 f 数组压缩成三个变量，这样空间复杂度就变成了O(1)。
+    //时间复杂度：循环的次数是 num 的位数，故渐进时间复杂度为 O(logn)。
+    //空间复杂度：虽然这里用了滚动数组，动态规划部分的空间代价是O(1) 的，但是这里用了一个临时变量把数字转化成了字符串，故渐进空间复杂度也是O(logn)。
+    //
+    public int translateNum(int num) {
+        String src = String.valueOf(num);
+        int p = 0, q = 0, r = 1;
+        for (int i = 0; i < src.length(); ++i) {
+            p = q;
+            q = r;
+            r = 0;
+            r += q;
+            if (i == 0) {
+                continue;
+            }
+            String pre = src.substring(i - 1, i + 1);
+            if (pre.compareTo("25") <= 0 && pre.compareTo("10") >= 0) {
+                r += p;
+            }
+        }
+        return r;
+    }
 
     //1431. 拥有最多糖果的孩子
     public List<Boolean> kidsWithCandies(int[] candies, int extraCandies) {
@@ -156,11 +200,132 @@ public class TTTT2 {
         //如果可以用判断语句，很快就能想到用递归，但是不能用判断语句
         //return n == 0 ? 0 : n + sumNums(n - 1);
         int sum = n;
-        boolean flag = n>0 && (sum += sumNums(n-1))>0; //巧妙利用"短路"特性 当n大于0时 就继续递归 否则停止递归 return 前面的累加值
+        boolean flag = n > 0 && (sum += sumNums(n - 1)) > 0; //巧妙利用"短路"特性 当n大于0时 就继续递归 否则停止递归 return 前面的累加值
         return sum;
     }
 
+    //面试题29. 顺时针打印矩阵，见下一题54
+    public int[] spiralOrder(int[][] matrix) {
+        if (matrix == null || matrix.length == 0 || matrix[0].length == 0) {
+            return new int[0];
+        }
+        int rows = matrix.length, columns = matrix[0].length;
+        boolean[][] visited = new boolean[rows][columns];
+        int total = rows * columns;
+        int[] order = new int[total];
+        int row = 0, column = 0;
+        int[][] directions = {{0, 1}, {1, 0}, {0, -1}, {-1, 0}};
+        int directionIndex = 0;
+        for (int i = 0; i < total; i++) {
+            order[i] = matrix[row][column];
+
+            visited[row][column] = true;
+            int nextRow = row + directions[directionIndex][0];
+            int nextColumn = column + directions[directionIndex][1];
+            if (nextRow < 0 || nextRow >= rows || nextColumn < 0 || nextColumn >= columns || visited[nextRow][nextColumn]) {
+                directionIndex = (directionIndex + 1) % 4;
+            }
+            row += directions[directionIndex][0];
+            column += directions[directionIndex][1];
+        }
+        return order;
+    }
+
+    //54. 螺旋矩阵
+    //给定一个包含 m x n 个元素的矩阵（m 行, n 列），请按照顺时针螺旋顺序，返回矩阵中的所有元素。
+    //方法一：可以模拟螺旋矩阵的路径。
+    // 初始位置是矩阵的左上角，初始方向是向右，当路径超出界限或者进入之前访问过的位置时，则顺时针旋转，进入下一个方向。
+    //判断路径是否进入之前访问过的位置需要使用一个与输入矩阵大小相同的辅助矩阵visited，其中的每个元素表示该位置是否被访问过。当一个元素被访问时，将visited 中的对应位置的元素设为已访问。
+    //如何判断路径是否结束？由于矩阵中的每个元素都被访问一次，因此路径的长度即为矩阵中的元素数量，当路径的长度达到矩阵中的元素数量时即为完整路径，将该路径返回。
+    //时间复杂度：O(mn)，其中 m 和 n 分别是输入矩阵的行数和列数。矩阵中的每个元素都要被访问一次。
+    //空间复杂度：O(mn)。需要创建一个大小为 m×n 的矩阵visited 记录每个位置是否被访问过。
+    public List<Integer> spiralOrder_54(int[][] matrix) {
+        List<Integer> order = new ArrayList<Integer>();
+        if (matrix == null || matrix.length == 0 || matrix[0].length == 0) {
+            return order;
+        }
+        int rows = matrix.length, columns = matrix[0].length;
+        boolean[][] visited = new boolean[rows][columns];
+        int total = rows * columns;
+        int row = 0, column = 0;
+        int[][] directions = {{0, 1}, {1, 0}, {0, -1}, {-1, 0}};
+        int directionIndex = 0;
+        for (int i = 0; i < total; i++) {
+            order.add(matrix[row][column]);
+            visited[row][column] = true;
+            int nextRow = row + directions[directionIndex][0];
+            int nextColumn = column + directions[directionIndex][1];
+            if (nextRow < 0 || nextRow >= rows || nextColumn < 0 || nextColumn >= columns || visited[nextRow][nextColumn]) {
+                directionIndex = (directionIndex + 1) % 4;
+            }
+            row += directions[directionIndex][0];
+            column += directions[directionIndex][1];
+        }
+        return order;
+    }
+
+    //方法二：按照层级来，见官网
 
 
+    //59. 螺旋矩阵 II
+//    public int[][] generateMatrix(int n) {
+//
+//        return {{0,0}};
+//    }
+
+
+    //990. 等式方程的可满足性
+    //给定一个由表示变量之间关系的字符串方程组成的数组，每个字符串方程 equations[i] 的长度为 4，
+    // 并采用两种不同的形式之一："a==b" 或 "a!=b"。在这里，a 和 b 是小写字母（不一定不同），表示单字母变量名。
+    //
+    //只有当可以将整数分配给变量名，以便满足所有给定的方程时才返回 true，否则返回 false。 
+    //
+    //我们可以将每一个变量看作图中的一个节点，把相等的关系 == 看作是连接两个节点的边，那么由于表示相等关系的等式方程具有传递性，即如果 a==b 和 b==c 成立，则 a==c 也成立。
+    // 也就是说，所有相等的变量属于同一个连通分量。因此，我们可以使用并查集(union-find算法)来维护这种连通分量的关系。
+    //首先遍历所有的等式，构造并查集。同一个等式中的两个变量属于同一个连通分量，因此将两个变量进行合并。
+    //然后遍历所有的不等式。同一个不等式中的两个变量不能属于同一个连通分量，因此对两个变量分别查找其所在的连通分量，如果两个变量在同一个连通分量中，则产生矛盾，返回 false。
+    //如果遍历完所有的不等式没有发现矛盾，则返回 true。
+    //见《算法》的第一章的union-find算法
+    //路径压缩的quick-union算法，当然还有好几种union-find 算法
+    //时间复杂度：O(n+ClogC)，其中 n 是 equations 中的方程数量，C 是变量的总数，在本题中变量都是小写字母，即 C≤26。
+    // 上面的并查集代码中使用了路径压缩优化，对于每个方程的合并和查找的均摊时间复杂度都是 O(logC)。由于需要遍历每个方程，因此总时间复杂度是 O(n+ClogC)。
+    //
+    //空间复杂度：O(C)。创建一个数组 parent 存储每个变量的连通分量信息，由于变量都是小写字母，因此 parent 是长度为 C。
+    public boolean equationsPossible(String[] equations) {
+        int length = equations.length;
+        int[] parent = new int[26]; //parent of i，触点i的父结点
+        for (int i = 0; i < 26; i++) {
+            parent[i] = i;
+        }
+        for (String str : equations) {
+            if (str.charAt(1) == '=') {
+                int index1 = str.charAt(0) - 'a';
+                int index2 = str.charAt(3) - 'a';
+                union(parent, index1, index2);
+            }
+        }
+        for (String str : equations) {
+            if (str.charAt(1) == '!') {
+                int index1 = str.charAt(0) - 'a';
+                int index2 = str.charAt(3) - 'a';
+                if (find(parent, index1) == find(parent, index2)) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    public void union(int[] parent, int index1, int index2) {
+        parent[find(parent, index1)] = find(parent, index2);
+    }
+
+    public int find(int[] parent, int index) { //路径压缩算法
+        while (parent[index] != index) {
+            parent[index] = parent[parent[index]];
+            index = parent[index];
+        }
+        return index;
+    }
 
 }
