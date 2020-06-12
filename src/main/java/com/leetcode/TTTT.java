@@ -82,6 +82,10 @@ public class TTTT {
 
 
     //15. 三数之和         题目要求不能包括重复的三元组,这个要求很高。
+    //给你一个包含 n 个整数的数组 nums，判断 nums 中是否存在三个元素 a，b，c ，使得 a + b + c = 0 ？请你找出所有满足条件且不重复的三元组。
+    //
+    //注意：答案中不可以包含重复的三元组。
+    //
     //看的别人的题解
     //首先对数组进行排序，排序后固定一个数 nums[i]，再使用左右指针指向 nums[i]后面的两端，数字分别为 nums[L] 和 nums[R]，计算三个数的和 sum 判断是否满足为0，满足则添加进结果集
     //如果 nums[i]大于 0，则三数之和必然无法等于 0，结束循环
@@ -114,8 +118,100 @@ public class TTTT {
         return ans;
     }
 
+    //18. 四数之和
+    //给定一个包含 n 个整数的数组 nums 和一个目标值 target，判断 nums 中是否存在四个元素 a，b，c 和 d ，使得 a + b + c + d 的值与 target 相等？找出所有满足条件且不重复的四元组。
+    //
+    //注意：答案中不可以包含重复的四元组。
+    //思路和三数之和类似，
+    //a遍历O(N)里嵌套b遍历O(N)再嵌套c,d双指针O(N)--> O(N^3)。 总比暴力法O(N^4)好些吧。
+    public List<List<Integer>> fourSum(int[] nums, int target) {
+        List<List<Integer>> ans = new ArrayList();
+        int len = nums.length;
+        if (nums == null || len < 4) return ans;
+        Arrays.sort(nums);  // 排序
+        int a, b, c, d;
+        for (a = 0; a <= len - 4; a++) {
+            if (a > 0 && nums[a] == nums[a - 1]) continue; //确保nums[a] 改变了
+            for (b = a + 1; b <= len - 3; b++) {
+                if (b > a + 1 && nums[b] == nums[b - 1]) continue;//确保nums[b] 改变了
+                c = b + 1;
+                d = len - 1;
+                while (c < d) {
+                    if (nums[a] + nums[b] + nums[c] + nums[d] < target) {
+                        c++;
+                    } else if (nums[a] + nums[b] + nums[c] + nums[d] > target) {
+                        d--;
+                    } else {
+                        ans.add(Arrays.asList(nums[a], nums[b], nums[c], nums[d]));
+                        while (c < d && nums[c + 1] == nums[c]) { //确保nums[c] 改变了
+                            c++;
+                        }
+                        while (c < d && nums[d - 1] == nums[d]) {//确保nums[d] 改变了
+                            d--;
+                        }
+                        c++;
+                        d--;
+
+                    }
+
+                }
+
+            }
+        }
+        return ans;
+    }
+
+    //454. 四数相加 II
+    //给定四个包含整数的数组列表 A , B , C , D ,计算有多少个元组 (i, j, k, l) ，使得 A[i] + B[j] + C[k] + D[l] = 0。
+    //
+    //为了使问题简单化，所有的 A, B, C, D 具有相同的长度 N，且 0 ≤ N ≤ 500 。所有整数的范围在 -228 到 228 - 1 之间，最终结果不会超过 231 - 1 。
+    //
+    //例如:
+    //输入:
+    //A = [ 1, 2]
+    //B = [-2,-1]
+    //C = [-1, 2]
+    //D = [ 0, 2]
+    //输出:  2
+    //解释:
+    //两个元组如下:
+    //1. (0, 0, 0, 1) -> A[0] + B[0] + C[0] + D[1] = 1 + (-2) + (-1) + 2 = 0
+    //2. (1, 1, 0, 0) -> A[1] + B[1] + C[0] + D[0] = 2 + (-1) + (-1) + 0 = 0
+    //方法一，暴力法：循环次数 N*N*N*N， 会超时
+    //方法二，
+    //思路：
+    //一.采用分为两组，HashMap存一组，另一组和HashMap进行比对。
+    //二.这样的话情况就可以分为三种：
+    //1.HashMap存一个数组，如A。然后计算三个数组之和，如BCD。时间复杂度为：O(n)+O(n^3),得到O(n^3).
+    //2.HashMap存三个数组之和，如ABC。然后计算一个数组，如D。时间复杂度为：O(n^3)+O(n),得到O(n^3).
+    //3.HashMap存两个数组之和，如AB。然后计算两个数组之和，如CD。时间复杂度为：O(n^2)+O(n^2),得到O(n^2).
+    //三.根据第二点我们可以得出要存两个数组算两个数组。
+    //四.我们以存AB两数组之和为例。首先求出A和B任意两数之和sumAB，以sumAB为key，sumAB出现的次数为value，存入hashmap中。
+    //然后计算C和D中任意两数之和的相反数sumCD，在hashmap中查找是否存在key为sumCD。
+    //算法时间复杂度为O(n2)。
+    public int fourSumCount(int[] A, int[] B, int[] C, int[] D) {
+        Map<Integer, Integer> map = new HashMap<>();
+        int res = 0;
+        for (int i = 0; i < A.length; i++) {
+            for (int j = 0; j < B.length; j++) {
+                int sumAB = A[i] + B[j];
+                if (map.containsKey(sumAB)) map.put(sumAB, map.get(sumAB) + 1);
+                else map.put(sumAB, 1);
+            }
+        }
+
+        for (int i = 0; i < C.length; i++) {
+            for (int j = 0; j < D.length; j++) {
+                int sumCD = -(C[i] + D[j]);
+                if (map.containsKey(sumCD)) res += map.get(sumCD);
+            }
+        }
+        return res;
+    }
 
     //16. 最接近的三数之和
+    //给定一个包括 n 个整数的数组 nums 和 一个目标值 target。
+    // 找出 nums 中的三个整数，使得它们的和与 target 最接近。返回这三个数的和。假定每组输入只存在唯一答案。
     //解法一：暴力法
     //时间复杂度：O(n^3)
     public static int threeSumClosest(int[] nums, int target) {
@@ -131,6 +227,7 @@ public class TTTT {
         }
         return sum;
     }
+
 
     //解法二：
     //首先进行数组排序，时间复杂度 O(nlogn)
