@@ -13,6 +13,64 @@ import java.util.*;
  * 树相关的题目
  */
 public class TreeRelated {
+    //671. 二叉树中第二小的节点
+    //给定一个非空特殊的二叉树，每个节点都是正数，并且每个节点的子节点数量只能为 2 或 0。
+    // 如果一个节点有两个子节点的话，那么这个节点的值不大于它的子节点的值。 
+    //
+    //给出这样的一个二叉树，你需要输出所有节点中的第二小的值。如果第二小的值不存在的话，输出 -1 。
+    //
+    //示例 1:
+    //
+    //输入:
+    //    2
+    //   / \
+    //  2   5
+    //     / \
+    //    5   7
+    //
+    //输出: 5
+    //说明: 最小的值是 2 ，第二小的值是 5 。
+    //方法一：遍历所有结点，然后排序，取第二个
+    //方法二：  算法：
+    //让 min1 = root.val。当遍历结点 node，如果 node.val > min1，我们知道在 node 处的子树中的所有值都至少是 node.val，因此在该子树中不此存在第二个最小值。因此，我们不需要搜索这个子树。
+    //此外，由于我们只关心第二个最小值 ans，因此我们不需要记录任何大于当前第二个最小值的值，因此与方法 1 不同，我们可以完全不用集合存储数据。
+    //复杂度分析
+    //
+    //时间复杂度：O(N)。其中 N 是给定树中的节点总数。我们最多访问每个节点一次。
+    //空间复杂度：O(N)，存储在 ans 和 min1 中的信息为 O(1)，但我们的深度优先搜索可能会在调用堆栈中存储多达 O(h)=O(N) 的信息，其中 h 是树的高度。
+    public int findSecondMinimumValue(TreeNode root) {
+        if (root == null) return -1;
+        return help(root, root.val); //root.val是最小的结点
+    }
+
+    private int help(TreeNode root, int min) {
+        if (root == null) return -1;
+        if (root.val > min) return root.val;
+        int left = help(root.left, min);
+        int right = help(root.right, min);
+        if (left == -1) return right;
+        if (right == -1) return left;
+        return Math.min(left, right);
+    }
+
+    //872. 叶子相似的树
+    //请考虑一颗二叉树上所有的叶子，这些叶子的值按从左到右的顺序排列形成一个 叶值序列
+    //    3
+    //   /  \
+    //  5    1
+    // / \   / \
+    // 6  2  9  8
+    //   / \
+    //  7   4
+    //举个例子，如上图所示，给定一颗叶值序列为 (6, 7, 4, 9, 8) 的树。
+    //
+    //如果有两颗二叉树的叶值序列是相同，那么我们就认为它们是 叶相似 的。
+    //
+    //如果给定的两个头结点分别为 root1 和 root2 的树是叶相似的，则返回 true；否则返回 false 。
+    public boolean leafSimilar(TreeNode root1, TreeNode root2) {
+
+    }
+
     //104. 二叉树的最大深度===>就是高度
     //给定一个二叉树，找出其最大深度。
     //时间复杂度：我们每个结点只访问一次，因此时间复杂度为 O(N),其中 N 是结点的数量。
@@ -247,6 +305,51 @@ public class TreeRelated {
         return res;
     }
     //方法三：二叉树的莫里斯遍历  ，将空间复杂度降到O(1)      ==》没看
+
+
+    //230. 二叉搜索树中第K小的元素
+    //给定一个二叉搜索树，编写一个函数 kthSmallest 来查找其中第 k 个最小的元素。
+    //说明：
+    //你可以假设 k 总是有效的，1 ≤ k ≤ 二叉搜索树元素个数。
+    //
+    //示例 1:
+    //输入: root = [3,1,4,null,2], k = 1
+    //   3
+    //  / \
+    // 1   4
+    //  \
+    //   2
+    //输出: 1
+    //进阶：
+    //如果二叉搜索树经常被修改（插入/删除操作）并且你需要频繁地查找第 k 小的值，你将如何优化 kthSmallest 函数？
+    //方法一：中序遍历，然后求第k的值
+    //时间复杂度：O(N)，遍历了整个树。
+    //空间复杂度：O(N)，用了一个数组存储中序序列。
+    public int kthSmallest(TreeNode root, int k) {
+        List<Integer> res = new ArrayList<>();
+        inorderScan(root, res);
+        return res.get(k - 1);
+    }
+
+    //方法二：迭代
+    //算法：
+    //在栈的帮助下，可以将方法一的递归转换为迭代，这样可以加快速度，因为这样可以不用遍历整个树，可以在找到答案后停止。
+    //时间复杂度：O(H+k)，其中 H 指的是树的高度，由于我们开始遍历之前，要先向下达到叶，当树是一个平衡树时：复杂度为O(logN+k)。当树是一个不平衡树时：复杂度为 O(N+k)，此时所有的节点都在左子树。
+    //空间复杂度：O(H+k)。当树是一个平衡树时：O(logN+k)。当树是一个非平衡树时：O(N+k)。
+    //
+    public int kthSmallest2(TreeNode root, int k) {
+        LinkedList<TreeNode> stack = new LinkedList<TreeNode>();
+        while (true) {
+            while (root != null) {
+                stack.add(root);
+                root = root.left;
+            }
+            root = stack.removeLast();
+            if (--k == 0) return root.val;
+            root = root.right;
+        }
+    }
+
 
     //144. 二叉树的前序遍历
     //方法一：递归
