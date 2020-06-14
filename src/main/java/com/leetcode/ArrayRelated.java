@@ -10,6 +10,139 @@ import java.util.*;
  * @Author: lihongbing
  */
 public class ArrayRelated {
+    //35. 搜索插入位置
+    //给定一个排序数组和一个目标值，在数组中找到目标值，并返回其索引。如果目标值不存在于数组中，返回它将会被按顺序插入的位置。
+    //你可以假设数组中无重复元素。
+    //示例 1:
+    //输入: [1,3,5,6], 5
+    //输出: 2
+    //示例 2:
+    //输入: [1,3,5,6], 2
+    //输出: 1
+    //示例 3:
+    //输入: [1,3,5,6], 7
+    //输出: 4
+    //遍历
+    // 时间复杂度：O(n)
+    public int searchInsert(int[] nums, int target) {
+        for (int i = 0; i < nums.length; i++) {
+            if (nums[i] < target) {
+                continue;
+            } else if (nums[i] == target) {
+                return i;
+            } else {
+                return i;
+
+            }
+        }
+        return nums.length;
+    }
+
+    //方法二：二分查找
+    //时间复杂度：O(logn)
+    public int searchInsert2(int[] nums, int target) {
+        int left = 0, right = nums.length - 1;
+        while (left <= right) {
+            int mid = (left + right) / 2;
+            if (nums[mid] == target) {
+                return mid;
+            } else if (nums[mid] < target) {
+                left = mid + 1;
+            } else {
+                right = mid - 1;
+            }
+        }
+        return left;
+    }
+
+    //278. 第一个错误的版本
+    //你是产品经理，目前正在带领一个团队开发新的产品。不幸的是，你的产品的最新版本没有通过质量检测。由于每个版本都是基于之前的版本开发的，所以错误的版本之后的所有版本都是错的。
+    //假设你有 n 个版本 [1, 2, ..., n]，你想找出导致之后所有版本出错的第一个错误的版本。
+    //你可以通过调用 bool isBadVersion(version) 接口来判断版本号 version 是否在单元测试中出错。实现一个函数来查找第一个错误的版本。你应该尽量减少对调用 API 的次数。
+    //
+    //示例:
+    //给定 n = 5，并且 version = 4 是第一个错误的版本。
+    //
+    //调用 isBadVersion(3) -> false
+    //调用 isBadVersion(5) -> true
+    //调用 isBadVersion(4) -> true
+    //
+    //所以，4 是第一个错误的版本。 
+    //二分查找第一个错误的版本
+    //left指向的都是正确的版本，right指向的都是错误的版本，left和right越来越接近，最终left+1=right
+    ////时间复杂度：O(logn)
+    public static int firstBadVersion(int n) {
+        int left = 1;
+        int right = n;
+        if (isBadVersion(left)) return left;
+        while ((right - left) != 1) {
+            //int mid =(left + right) / 2; //针对测试用例2126753390 1702766719原因是这里溢出了
+            Long tmp = (Long.valueOf(left) + Long.valueOf(right)) / 2;
+            int mid = tmp.intValue();
+
+            if (isBadVersion(mid)) {
+                right = mid;
+            } else {
+                left = mid;
+            }
+        }
+        return right;
+    }
+
+    public static boolean isBadVersion(int version) {
+        return version >= 1702766719 ? true : false;
+    }
+
+    //374. 猜数字大小
+    //我们正在玩一个猜数字游戏。 游戏规则如下：
+    //我从 1 到 n 选择一个数字。 你需要猜我选择了哪个数字。
+    //每次你猜错了，我会告诉你这个数字是大了还是小了。
+    //你调用一个预先定义好的接口 guess(int num)，它会返回 3 个可能的结果（-1，1 或 0）：
+    //
+    //-1 : 我的数字比较小
+    // 1 : 我的数字比较大
+    // 0 : 恭喜！你猜对了！
+    //
+    //示例 :
+    //输入: n = 10, pick = 6
+    //输出: 6
+    //    //时间复杂度：O(logn)
+    public static int guessNumber(int n) {
+        int left = 1;
+        int right = n;
+        while (left <= right) {
+            //int mid =(left + right) / 2;
+            Long tmp = (Long.valueOf(left) + Long.valueOf(right)) / 2;
+            int mid = tmp.intValue();
+
+            if (guess(mid) == 0) {
+                return mid;
+            } else if (guess(mid) == -1) {
+                right = mid - 1;
+            } else {
+                left = mid + 1;
+            }
+        }
+        return -1;
+    }
+
+    static int  guess(int num) {
+        if(num==6){
+            return 0;
+        }else if(num>6){
+            return -1;
+        }else{
+            return 1;
+        }
+    }
+
+
+    public static void main(String[] args) {
+//        System.out.println(firstBadVersion(2126753390));
+        System.out.println(guessNumber(10));
+    }
+
+
     //66. 加一
     //给定一个由整数组成的非空数组所表示的非负整数，在该数的基础上加一。
     //
