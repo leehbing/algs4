@@ -68,7 +68,7 @@ public class TreeRelated {
     //
     //如果给定的两个头结点分别为 root1 和 root2 的树是叶相似的，则返回 true；否则返回 false 。
     public boolean leafSimilar(TreeNode root1, TreeNode root2) {
-
+        return true;
     }
 
     //104. 二叉树的最大深度===>就是高度
