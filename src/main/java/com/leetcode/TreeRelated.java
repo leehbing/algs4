@@ -511,4 +511,14 @@ public class TreeRelated {
         root.right = buildTree(preorder, pIndex - inLeft + preLeft + 1, preRight, map, pIndex + 1, inRight);
         return root;
     }
+
+
+
+
+
+
+
+    public static void main(String[] args){
+
+    }
 }
