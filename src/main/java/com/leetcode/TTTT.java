@@ -309,6 +309,161 @@ public class TTTT {
 
     }
 
+    //69. x 的平方根
+    //实现 int sqrt(int x) 函数。
+    //
+    //计算并返回 x 的平方根，其中 x 是非负整数。
+    //
+    //由于返回类型是整数，结果只保留整数的部分，小数部分将被舍去。
+    //
+    //示例 1:
+    //
+    //输入: 4
+    //输出: 2
+    //示例 2:
+    //
+    //输入: 8
+    //输出: 2
+    //说明: 8 的平方根是 2.82842...,
+    //     由于返回类型是整数，小数部分将被舍去。
+    //
+    //方法一：袖珍计算器算法
+    //「袖珍计算器算法」是一种用指数函数exp 和对数函数 ln 代替平方根函数的方法。我们通过有限的可以使用的数学函数，得到我们想要计算的结果。
+    //
+    //我们将 sqrt(x)写成幂的形式 x^(1/2)，再使用自然对数 e 进行换底，即可得到
+    //sqrt(x)=x^(1/2)=(e ^ (ln x))^(1/2)  =e^(0.5lnx)
+    //
+    //这样我们就可以得到 sqrt(x)
+    //注意： 由于计算机无法存储浮点数的精确值（浮点数的存储方法可以参考 IEEE 754，这里不再赘述），
+    // 而指数函数和对数函数的参数和返回值均为浮点数，因此运算过程中会存在误差。例如当 x=2147395600 时，e^(0.5lnx)的计算结果与正确值 4634046340 相差 10^-11，
+    // 这样在对结果取整数部分时，会得到 4633946339 这个错误的结果。
+    //
+    //因此在得到结果的整数部分 ans 后，我们应当找出 ans 与ans+1 中哪一个是真正的答案。
+    public int mySqrt(int x) {
+        if (x == 0) {
+            return 0;
+        }
+        int ans = (int) Math.exp(0.5 * Math.log(x));
+        return (long) (ans + 1) * (ans + 1) <= x ? ans + 1 : ans;
+    }
+
+    //方法二：二分查找
+    //由于 x 平方根的整数部分 ans 是满足 k^2 ≤x 的最大 k 值，因此我们可以对 k 进行二分查找，从而得到答案。
+    //
+    //二分查找的下界为 0，上界可以粗略地设定为 x。在二分查找的每一步中，我们只需要比较中间元素 mid 的平方与 x 的大小关系，
+    // 并通过比较的结果调整上下界的范围。由于我们所有的运算都是整数运算，不会存在误差，
+    // 因此在得到最终的答案ans 后，也就不需要再去尝试ans+1 了。
+    //时间复杂度：O(logx)，即为二分查找需要的次数。
+    //空间复杂度：O(1)。
+    public int mySqrt2(int x) {
+        int l = 0, r = x, ans = -1;
+        while (l <= r) {
+            int mid = l + (r - l) / 2;
+            if ((long) mid * mid <= x) {
+                ans = mid;
+                l = mid + 1;
+            } else {
+                r = mid - 1;
+            }
+        }
+        return ans;
+    }
+
+    //367. 有效的完全平方数
+    //给定一个正整数 num，编写一个函数，如果 num 是一个完全平方数，则返回 True，否则返回 False。
+    //
+    //说明：不要使用任何内置的库函数，如  sqrt。
+    //
+    //示例 1：
+    //
+    //输入：16
+    //输出：True
+    //示例 2：
+    //
+    //输入：14
+    //输出：False
+    //
+    //方法一：二分查找
+    //若 num < 2，返回 true。
+    //设置左边界为 2，右边界为 num/2。
+    //当 left <= right：
+    //令 x = (left + right) / 2 作为一个猜测，计算 guess_squared = x * x 与 num 做比较：
+    //如果 guess_squared == num，则 num 是一个完全平方数，返回 true。
+    //如果 guess_squared > num ，设置右边界 right = x-1。
+    //否则设置左边界为 left = x+1。
+    //如果在循环体内没有找到，则说明 num 不是完全平方数，返回 false。
+    //时间复杂度：O(logN)。
+    //空间复杂度：O(1)。
+    public boolean isPerfectSquare(int num) {
+        if (num < 2) {
+            return true;
+        }
+
+        long left = 2, right = num / 2, x, guessSquared;
+        while (left <= right) {
+            x = left + (right - left) / 2;
+            guessSquared = x * x;
+            if (guessSquared == num) {
+                return true;
+            }
+            if (guessSquared > num) {
+                right = x - 1;
+            } else {
+                left = x + 1;
+            }
+        }
+        return false;
+    }
+
+    //633. 平方数之和
+    //给定一个非负整数 c ，你要判断是否存在两个整数 a 和 b，使得 a2 + b2 = c。
+    //
+    //示例1:
+    //输入: 5
+    //输出: True
+    //解释: 1 * 1 + 2 * 2 = 5
+    // 
+    //示例2:
+    //输入: 3
+    //输出: False
+    //方法一：二分查找
+    //我们可以首先枚举 a，并保证 c - a^2 >= 0，随后我们通过二分查找的方法找出是否存在 b，满足 b^2 = c - a^2。二分查找的范围为 [0, c - a^2]。
+    //时间复杂度：O(sqrt(c)log c)，其中枚举 a 的时间复杂度为 O(sqrt(c))，二分查找的时间复杂度为 logc。
+    //空间复杂度：O(logc)。代码中使用递归的方式实现二分查找，也可以优化到 O(1)。
+    public boolean judgeSquareSum(int c) {
+        for (long a = 0; a * a <= c; a++) {
+            int b = c - (int) (a * a);
+            if (binary_search(0, b, b))
+                return true;
+        }
+        return false;
+    }
+
+    public boolean binary_search(long s, long e, int n) {
+        if (s > e)
+            return false;
+        long mid = s + (e - s) / 2;
+        if (mid * mid == n)
+            return true;
+        if (mid * mid > n)
+            return binary_search(s, mid - 1, n);
+        return binary_search(mid + 1, e, n);
+    }
+
+    //方法二：使用 sqrt 函数
+    //在枚举 a 之后，我们也可以直接使用 sqrt 函数直接找出 b。
+    //时间复杂度：O(sqrt(c))
+    //空间复杂度：O(1)。
+    public boolean judgeSquareSum2(int c) {
+        for (long a = 0; a * a <= c; a++) {
+            double b = Math.sqrt(c - a * a);
+            if (b == (int) b)
+                return true;
+        }
+        return false;
+    }
+
+
     //14. 最长公共前缀
     //编写一个函数来查找字符串数组中的最长公共前缀。
     //
@@ -336,9 +491,6 @@ public class TTTT {
         return result;
 
     }
-
-
-
 
 
     public static boolean isValid(String s) {
@@ -380,13 +532,6 @@ public class TTTT {
 
         return -1;
     }
-
-
-
-
-
-
-
 
 
     public static void main(String[] args) {
