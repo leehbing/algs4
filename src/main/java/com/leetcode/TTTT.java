@@ -493,25 +493,7 @@ public class TTTT {
     }
 
 
-    public static boolean isValid(String s) {
-        if (s.isEmpty()) return true;
-        Stack stack = new Stack<Character>();
-        for (int i = 0; i < s.length(); i++) {
-            if (stack.isEmpty()) {
-                stack.push(s.charAt(i));
-                continue;
-            }
-            char peek = (Character) stack.peek();
-            char cur = s.charAt(i);
-            if ((peek == '(' && cur == ')') || (peek == '{' && cur == '}') || (peek == '[' && cur == ']')) {
-                stack.pop();
-            } else {
-                stack.push(s.charAt(i));
-            }
-        }
 
-        return stack.isEmpty();
-    }
 
 
     public static int strStr(String haystack, String needle) {

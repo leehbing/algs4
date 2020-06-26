@@ -446,4 +446,146 @@ public class StringRelated {
         }
         return s1.length() - 1 - start;
     }
+
+    //面试题 16.18. 模式匹配
+    //你有两个字符串，即pattern和value。 pattern字符串由字母"a"和"b"组成，用于描述字符串中的模式。
+    // 例如，字符串"catcatgocatgo"匹配模式"aabab"（其中"cat"是"a"，"go"是"b"），该字符串也匹配像"a"、"ab"和"b"这样的模式。
+    // 但需注意"a"和"b"不能同时表示相同的字符串。编写一个方法判断value字符串是否匹配pattern字符串。
+    //
+    //示例 1：
+    //输入： pattern = "abba", value = "dogcatcatdog"
+    //输出： true
+    //示例 2：
+    //输入： pattern = "abba", value = "dogcatcatfish"
+    //输出： false
+    //示例 3：
+    //输入： pattern = "aaaa", value = "dogcatcatdog"
+    //输出： false
+    //示例 4：
+    //输入： pattern = "abba", value = "dogdogdogdog"
+    //输出： true
+    //解释： "a"="dogdog",b=""，反之也符合规则
+
+    //前言
+    //本题的算法实现不难，但是细节较多。题目中给出的 pattern 和 value 的长度可以为 0，因此需要充分考虑边界情况。
+    //方法一：枚举
+    //思路与算法
+    //
+    //我们设 pattern 的长度为 lp，value 的长度为 lv。根据题目描述，我们需要给字母 a 和 b 分配不同的字符串值（可以为空字符串），
+    // 使得将 pattern 中的字母替换成对应的字符串后，结果与 value 相同。
+    //
+    //在分配字符串之前，我们不妨先分配 a 和 b 对应字符串的长度。如果确定了长度，那么我们只要将 value 按照 pattern 中出现字母的顺序，
+    // 划分成 lp个子串，并判断其中 a 对应的子串是否相同，以及 b 对应的子串是否相同即可。具体地，假设 pattern 中出现了 ca个 a 以及 lp-ca个 b，
+    // 并且 a 和 b 对应字符串的长度分别为 la和 lb，那么必须要满足：
+    //
+    //ca * la + (lp - ca) * lb = lv
+    //其中 ca是已知的常量，la和 lb是未知数。这是一个二元一次方程，可能无解、有唯一解或者无数解。然而我们需要的仅仅是自然数解，也就是 la和 lb都大于等于 0 的解，
+    // 因此我们可以直接枚举 la的值，它必须是 [0, lv/ca]之间的自然数，否则 lb就不会大于等于 0 了。在枚举 la之后，我们将其带入等式并解出lb。如果 lb是整数，我们就枚举了一组 a 和 b 的可能长度。
+    //在枚举了长度之后，我们就可以根据 pattern 来将 value 划分成 lp个子串。
+    // 具体地，我们遍历 pattern，并用一个指针 pos 来帮助我们进行划分。当我们遍历到一个 a 时，我们取出从 pos 开始，长度为 la的子串。
+    // 如果这是我们第一次遇到字母 a，我们就得到了 a 应该对应的子串；否则，我们将取出的子串与 a 应该对应的子串进行比较，如果不相同，说明模式匹配失败。
+    //同理，当我们遍历到一个 b 时，我们取出从 pos 开始，长度为 lb的子串，根据是否第一次遇到字母 b 来进行比较。在比较结束后，我们将 pos 向后移动，进行下一个字母的匹配。
+    //
+    //在遍历完成之后，如果匹配没有失败，我们还需要判断一下 a 和 b 是否对应了不同的子串。只有它们对应的子串不同时，才是一种满足题目要求的模式匹配。
+    //
+    //细节
+    //上面的算法看上去不是很复杂：我们只需要用一重循环枚举 la ，计算出 lb，再用一重循环遍历 pattern 以及移动 pos 即可。
+    // 但就像我们在「前言」部分所说的，本题有非常多的细节需要考虑。
+    //
+    //我们回到二元一次方程：ca * la + (lp - ca) * lb = lv
+    //如果我们枚举 la，那么必须要求 ca !=0，因为在 ca = 0的情况下，原方程如果有解，那么一定有无数解（因为 la可以取任意值）。因此如果 ca = 0，我们就必须枚举lb
+    //。这无疑增加了编码的复杂度，因为需要根据 ca的值选择对 la或lb进行枚举，失去了统一性。并且，如果 lp-ca也为 0，那么我们连 lb都无法枚举。
+    //
+    //因此，我们必须梳理一下判断的逻辑：
+    //如果 pattern 为空，那么只有在 value 也为空时，它们才能匹配；
+    //
+    //如果 value 为空，那么如果 pattern 也为空，就和第一条的情况相同；
+    //  如果 pattern 中只出现了一种字母，我们可以令该字母为空，另一没有出现的字母为任意非空串，就可以正确匹配；
+    //  如果 pattern 中出现了两种字母，那么就无法正确匹配，因为这两种字母都必须为空串，而题目描述中规定它们不能表示相同的字符串；
+    //如果 pattern 和 value 均非空，那么我们需要枚举 pattern 中出现的那个字母（如果两个字母均出现，可以枚举任意一个）对应的长度，使用上面提到的算法进行判断。
+    //
+    //对于上面的第三条，我们可以根据「对称性」减少代码的编写的复杂度：我们还是固定枚举la ，但如果 ca < lp - ca，即 a 出现的次数少于 b 出现的次数，
+    // 那么我们就将 pattern 中所有的 a 替换成 b，b 替换成 a。这样做就保证了 a 出现了至少一次（ca > 0），枚举 la就不会有任何问题，同时不会影响答案的正确性。
+    //
+    //这样一来，我们就可以优化判断的逻辑：
+    //我们首先保证 pattern 中 a 出现的次数不少于 b 出现的次数。如果不满足，我们就将 a 和 b 互相替换；
+    //如果 value 为空，那么要求 pattern 也为空（lp = 0）或者只出现了字母 a（lp - ca = 0），这两种情况均等同于 lp - ca = 0。在其余情况下，都无法匹配成功；
+    //如果 pattern 为空且 value 不为空，那么无法匹配成功；
+    //如果 pattern 和 value 均非空，我们就可以枚举 la并使用上面提到的算法进行判断。
+
+    //本题的时空复杂度不易分析（因为涉及到二元一次方程解的个数），这里只近似地给出一个结果。
+    //时间复杂度：O(lv^2)，其中 lp和 lv分别是 pattern 和 value 的长度。由于 la必须是 [0, lv/ca] 中的自然数，并且 1/2lp <=ca<=lp，因此方程解的个数为 O(lv/lp)。
+    // 对于每一组解，我们需要 O(lp + lv)的时间来进行判断，因此总时间复杂度为 O((lp + lv)*lv/lp)。根据大 O 表示法的定义（渐进上界），可以看成 O(lv^2)  。
+    //
+    //空间复杂度：O(lv)。我们需要存储 a 和 b 对应的子串，它们的长度之和不会超过 lv。
+    public boolean patternMatching(String pattern, String value) {
+        int count_a = 0, count_b = 0;
+        for (char ch : pattern.toCharArray()) {
+            if (ch == 'a') {
+                ++count_a;
+            } else {
+                ++count_b;
+            }
+        }
+        if (count_a < count_b) {
+            int temp = count_a;
+            count_a = count_b;
+            count_b = temp;
+            char[] array = pattern.toCharArray();
+            for (int i = 0; i < array.length; i++) {
+                array[i] = array[i] == 'a' ? 'b' : 'a';
+            }
+            pattern = new String(array);
+        }
+        if (value.length() == 0) {
+            return count_b == 0;
+        }
+        if (pattern.length() == 0) {
+            return false;
+        }
+        for (int len_a = 0; count_a * len_a <= value.length(); ++len_a) {
+            int rest = value.length() - count_a * len_a;
+            if ((count_b == 0 && rest == 0) || (count_b != 0 && rest % count_b == 0)) {
+                int len_b = (count_b == 0 ? 0 : rest / count_b);
+                int pos = 0;
+                boolean correct = true;
+                String value_a = "", value_b = "";
+                for (char ch : pattern.toCharArray()) {
+                    if (ch == 'a') {
+                        String sub = value.substring(pos, pos + len_a);
+                        if (value_a.length() == 0) {
+                            value_a = sub;
+                        } else if (!value_a.equals(sub)) {
+                            correct = false;
+                            break;
+                        }
+                        pos += len_a;
+                    } else {
+                        String sub = value.substring(pos, pos + len_b);
+                        if (value_b.length() == 0) {
+                            value_b = sub;
+                        } else if (!value_b.equals(sub)) {
+                            correct = false;
+                            break;
+                        }
+                        pos += len_b;
+                    }
+                }
+                if (correct && !value_a.equals(value_b)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    //方法二：
+    //说实在工作中真碰到这样的问题，第一反应是用现有的工具解决。算法可能要折腾半小时，而且看了众多解答也没有觉得特别的简洁。
+    //
+    //根据 pattern 构造一个正则它不香吗？
+    //
+    //aabb -> (\w*)\1(\w*)\2
+    //abba -> (\w*)(\w*)\2\1
+    //上面 \1 和 \2 表示对前面分组的反向引用。
+
 }
