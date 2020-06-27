@@ -540,39 +540,6 @@ public class ArrayRelated {
         //3. 解法3：快速选择 + 3-way-partition + 虚地址
     }
 
-    //448. 找到所有数组中消失的数字
-    //给定一个范围在  1 ≤ a[i] ≤ n ( n = 数组大小 ) 的 整型数组，数组中的元素一些出现了两次，另一些只出现一次。
-    //找到所有在 [1, n] 范围之间没有出现在数组中的数字。
-    //您能在不使用额外空间且时间复杂度为O(n)的情况下完成这个任务吗? 你可以假定返回的数组不算在额外空间内。
-    //
-    //示例:
-    //输入:
-    //[4,3,2,7,8,2,3,1]
-    //输出:
-    //[5,6]
-    public static List<Integer> findDisappearedNumbers(int[] nums) {
-        //方法一，我们假设数组大小为 N，它应该包含从 1 到 N 的数字。
-        // 但是有些数字丢失了，我们要做的是记录我们在数组中遇到的数字。
-        // 然后从 1....N 检查哈希表中没有出现的数字。
-        //时间复杂度：O(N)。
-        //空间复杂度：O(N)。
-        // Hash table for keeping track of the numbers in the array
-        // Note that we can also use a set here since we are not
-        // really concerned with the frequency of numbers.
-        HashMap<Integer, Boolean> hashTable = new HashMap<Integer, Boolean>();
-        for (int i = 0; i < nums.length; i++) {
-            hashTable.put(nums[i], true);
-        }
-        List<Integer> result = new LinkedList<Integer>();
-        // Iterate over the numbers from 1 to N and add all those
-        // that don't appear in the hash table.
-        for (int i = 1; i <= nums.length; i++) {
-            if (!hashTable.containsKey(i)) {
-                result.add(i);
-            }
-        }
-        return result;
-    }
 
     //27. 移除元素    仅使用 O(1) 额外空间
     //给你一个数组 nums 和一个值 val，你需要 原地 移除所有数值等于 val 的元素，并返回移除后数组的新长度。
@@ -1310,6 +1277,204 @@ public class ArrayRelated {
         return ans;
     }
 
+    //448. 找到所有数组中消失的数字
+    //给定一个范围在  1 ≤ a[i] ≤ n ( n = 数组大小 ) 的 整型数组，数组中的元素一些出现了两次，另一些只出现一次。
+    //找到所有在 [1, n] 范围之间没有出现在数组中的数字。
+    //您能在不使用额外空间且时间复杂度为O(n)的情况下完成这个任务吗? 你可以假定返回的数组不算在额外空间内。
+    //
+    //示例:
+    //输入:
+    //[4,3,2,7,8,2,3,1]
+    //输出:
+    //[5,6]
+
+    //方法一：我们假设数组大小为 N，它应该包含从 1 到 N 的数字。
+    // 但是有些数字丢失了，我们要做的是记录我们在数组中遇到的数字。
+    // 然后从 1....N 检查哈希表中没有出现的数字。
+    //时间复杂度：O(N)。
+    //空间复杂度：O(N)。
+    public static List<Integer> findDisappearedNumbers(int[] nums) {
+        // Hash table for keeping track of the numbers in the array
+        // Note that we can also use a set here since we are not
+        // really concerned with the frequency of numbers.
+        HashMap<Integer, Boolean> hashTable = new HashMap<Integer, Boolean>();
+        for (int i = 0; i < nums.length; i++) {
+            hashTable.put(nums[i], true);
+        }
+        List<Integer> result = new LinkedList<Integer>();
+        // Iterate over the numbers from 1 to N and add all those
+        // that don't appear in the hash table.
+        for (int i = 1; i <= nums.length; i++) {
+            if (!hashTable.containsKey(i)) {
+                result.add(i);
+            }
+        }
+        return result;
+    }
+
+    //方法二：原地修改，标记
+    //我们需要知道数组中存在的数字，由于数组的元素取值范围是 [1, N]，所以我们可以不使用额外的空间去解决它。
+    //我们可以在输入数组本身以某种方式标记已访问过的数字，然后再找到缺失的数字。
+    //算法：
+    //
+    //遍历输入数组的每个元素一次。
+    //我们将把 |nums[i]|-1 索引位置的元素标记为负数。即 nums[∣nums[i]∣−1]×−1 。
+    //然后遍历数组，若当前数组元素 nums[i] 为负数，说明我们在数组中存在数字 i+1。
+    //时间复杂度：O(N)。
+    //空间复杂度：O(1)，因为我们在原地修改数组，没有使用额外的空间。
+    public List<Integer> findDisappearedNumbers2(int[] nums) {
+        // Iterate over each of the elements in the original array
+        for (int i = 0; i < nums.length; i++) {
+            // Treat the value as the new index
+            int newIndex = Math.abs(nums[i]) - 1;
+            // Check the magnitude of value at this new index
+            // If the magnitude is positive, make it negative
+            // thus indicating that the number nums[i] has
+            // appeared or has been visited.
+            if (nums[newIndex] > 0) {
+                nums[newIndex] *= -1;
+            }
+        }
+        // Response array that would contain the missing numbers
+        List<Integer> result = new LinkedList<Integer>();
+        // Iterate over the numbers from 1 to N and add all those
+        // that have positive magnitude in the array
+        for (int i = 1; i <= nums.length; i++) {
+            if (nums[i - 1] > 0) {
+                result.add(i);
+            }
+        }
+        return result;
+    }
+
+
+    //41. 缺失的第一个正数
+    //给你一个未排序的整数数组，请你找出其中没有出现的最小的正整数。
+    //
+    //示例 1:
+    //输入: [1,2,0]
+    //输出: 3
+    //示例 2:
+    //输入: [3,4,-1,1]
+    //输出: 2
+    //示例 3:
+    //输入: [7,8,9,11,12]
+    //输出: 1
+    // 
+    //提示：
+    //你的算法的时间复杂度应为O(n)，并且只能使用常数级别的额外空间。
+    //前言
+    //如果本题没有额外的时空复杂度要求，那么就很容易实现：
+    //  我们可以将数组所有的数放入哈希表，随后从 1 开始依次枚举正整数，并判断其是否在哈希表中；
+    //  我们可以从 1 开始依次枚举正整数，并遍历数组，判断其是否在数组中。
+    //
+    //如果数组的长度为 N，那么第一种做法的时间复杂度为 O(N)，空间复杂度为 O(N)；
+    // 第二种做法的时间复杂度为 O(N^2)，空间复杂度为 O(1)。但它们都不满足题目的要求：时间复杂度为 O(N)，空间复杂度为 O(1)。
+    //「真正」满足此要求的算法是不存在的。但是我们可以退而求其次：
+    // 利用给定数组中的空间来存储一些状态。也就是说，如果题目给定的数组是不可修改的，那么就不存在满足时空复杂度要求的算法；
+    // 但如果我们可以修改给定的数组，那么是存在满足要求的算法的。
+    //方法一：哈希表
+    //对于「前言」中提到的第一种做法：
+    //我们可以将数组所有的数放入哈希表，随后从 1 开始依次枚举正整数，并判断其是否在哈希表中。
+    //
+    //仔细想一想，我们为什么要使用哈希表？这是因为哈希表是一个可以支持快速查找的数据结构：
+    //  给定一个元素，我们可以在 O(1) 的时间查找该元素是否在哈希表中。因此，我们可以考虑将给定的数组设计成哈希表的「替代产品」。
+    //实际上，对于一个长度为 N 的数组，其中没有出现的最小正整数只能在 [1, N+1] 中。这是因为如果[1,N] 都出现了，那么答案是 N+1，
+    // 否则答案是 [1, N]中没有出现的最小正整数。这样一来，我们将所有在 [1,N] 范围内的数放入哈希表，也可以得到最终的答案。
+    // 而给定的数组恰好长度为 N，这让我们有了一种将数组设计成哈希表的思路：
+    //
+    //我们对数组进行遍历，对于遍历到的数 x，如果它在 [1,N] 的范围内，那么就将数组中的第 x−1 个位置（注意：数组下标从 0 开始）打上「标记」。
+    // 在遍历结束之后，如果所有的位置都被打上了标记，那么答案是N+1，否则答案是最小的没有打上标记的位置加 1。
+    //
+    //那么如何设计这个「标记」呢？由于数组中的数没有任何限制，因此这并不是一件容易的事情。
+    // 但我们可以继续利用上面的提到的性质：由于我们只在意 [1,N] 中的数，
+    // 因此我们可以先对数组进行遍历，把不在 [1,N] 范围内的数修改成任意一个大于 N 的数（例如 N+1）。
+    // 这样一来，数组中的所有数就都是正数了，因此我们就可以将「标记」表示为「负号」。算法的流程如下：
+    //
+    //我们将数组中所有小于等于 0 的数修改为 N+1；
+    //我们遍历数组中的每一个数 x，它可能已经被打了标记，因此原本对应的数为 |x|，其中 ∣∣ 为绝对值符号。
+    //  如果 |x| ∈[1,N]，那么我们给数组中的第 ∣x∣−1 个位置的数添加一个负号。注意如果它已经有负号，不需要重复添加；
+    //
+    //在遍历完成之后，如果数组中的每一个数都是负数，那么答案是 N+1，否则答案是第一个正数的位置加 1。
+    //时间复杂度：O(N)，其中 N 是数组的长度。
+    //空间复杂度：O(1)。
+    public int firstMissingPositive(int[] nums) {
+        int n = nums.length;
+        for (int i = 0; i < n; ++i) {
+            if (nums[i] <= 0) {
+                nums[i] = n + 1;
+            }
+        }
+        for (int i = 0; i < n; ++i) {
+            int num = Math.abs(nums[i]);
+            if (num <= n) {
+                nums[num - 1] = -Math.abs(nums[num - 1]);
+            }
+        }
+        for (int i = 0; i < n; ++i) {
+            if (nums[i] > 0) {
+                return i + 1;
+            }
+        }
+        return n + 1;
+    }
+
+    //方法二：置换
+    //除了打标记以外，我们还可以使用置换的方法，将给定的数组「恢复」成下面的形式：
+    //如果数组中包含 x∈[1,N]，那么恢复后，数组的第 x−1 个元素为 x。
+    //在恢复后，数组应当有 [1, 2, ..., N] 的形式，但其中有若干个位置上的数是错误的，每一个错误的位置就代表了一个缺失的正数。
+    // 以题目中的示例二 [3, 4, -1, 1] 为例，恢复后的数组应当为 [1, -1, 3, 4]，我们就可以知道缺失的数为 2。
+    //
+    //那么我们如何将数组进行恢复呢？我们可以对数组进行一次遍历，
+    // 对于遍历到的数 x=nums[i]，如果 x∈[1,N]，我们就知道 x 应当出现在数组中的x−1 的位置，因此交换 nums[i] 和nums[x−1]，
+    // 这样 x 就出现在了正确的位置。在完成交换后，新的 nums[i] 可能还在 [1,N] 的范围内，我们需要继续进行交换操作，直到 x不在 [1, N]。
+    //
+    //注意到上面的方法可能会陷入死循环。如果 nums[i] 恰好与 nums[x−1] 相等，那么就会无限交换下去。
+    // 此时我们有 nums[i]=x=nums[x−1]，说明 x 已经出现在了正确的位置。因此我们可以跳出循环，开始遍历下一个数。
+    //
+    //由于每次的交换操作都会使得某一个数交换到正确的位置，因此交换的次数最多为 N，整个方法的时间复杂度为 O(N)。
+    //时间复杂度：O(N)，其中 N 是数组的长度。
+    //空间复杂度：O(1)。
+    public int firstMissingPositive2(int[] nums) {
+        int n = nums.length;
+        for (int i = 0; i < n; ++i) {
+            while (nums[i] > 0 && nums[i] <= n && nums[nums[i] - 1] != nums[i]) {
+                int temp = nums[nums[i] - 1];
+                nums[nums[i] - 1] = nums[i];
+                nums[i] = temp;
+            }
+        }
+        for (int i = 0; i < n; ++i) {
+            if (nums[i] != i + 1) {
+                return i + 1;
+            }
+        }
+        return n + 1;
+    }
+
+    //442. 数组中重复的数据
+    //给定一个整数数组 a，其中1 ≤ a[i] ≤ n （n为数组长度）, 其中有些元素出现两次而其他元素出现一次。
+    //找到所有出现两次的元素。
+    //你可以不用到任何额外空间并在O(n)时间复杂度内解决这个问题吗？
+    //
+    //示例：
+    //输入:
+    //[4,3,2,7,8,2,3,1]
+    //输出:
+    //[2,3]
+    //解题思路
+    //找到数字i时，将位置i-1处的数字翻转为负数。
+    //如果位置i-1 上的数字已经为负，则i是出现两次的数字。
+    public List<Integer> findDuplicates(int[] nums) {
+        List<Integer> res = new ArrayList<>();
+        for (int i = 0; i < nums.length; ++i) {
+            int index = Math.abs(nums[i]) - 1;
+            if (nums[index] < 0)
+                res.add(Math.abs(index + 1));
+            nums[index] = -nums[index];
+        }
+        return res;
+    }
 
     public static void main(String[] args) {
 //        System.out.println(firstBadVersion(2126753390));
