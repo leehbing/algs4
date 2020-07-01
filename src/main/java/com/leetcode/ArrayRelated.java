@@ -1476,6 +1476,202 @@ public class ArrayRelated {
         return res;
     }
 
+
+    //718. 最长重复子数组
+    //给两个整数数组 A 和 B ，返回两个数组中公共的、长度最长的子数组的长度。
+    //
+    //示例 1:
+    //输入:
+    //A: [1,2,3,2,1]
+    //B: [3,2,1,4,7]
+    //输出: 3
+    //解释:
+    //长度最长的公共子数组是 [3, 2, 1]。
+
+    //暴力法
+    //即枚举数组 A 中的起始位置 i 与数组 B 中的起始位置 j，然后计算 A[i:] 与 B[j:] 的最长公共前缀 k。最终答案即为所有的最长公共前缀的最大值。
+    //虽然该暴力解法的最坏时间复杂度为 O(n^3)，但通过观察该暴力解法，我们可以提出几个时间复杂度更优秀的解法。
+    //方法一：动态规划法
+    //思路及算法
+    //
+    //暴力解法的过程中，我们发现最坏情况下对于任意 i 与 j ，A[i] 与 B[j] 比较了 min(i+1,j+1) 次。
+    // 这也是导致了该暴力解法时间复杂度过高的根本原因。
+    //不妨设 A 数组为 [1, 2, 3]，B 两数组为为 [1, 2, 4] ，那么在暴力解法中 A[2] 与 B[2] 被比较了三次。
+    // 这三次比较分别是我们计算 A[0:] 与 B[0:] 最长公共前缀、 A[1:] 与 B[1:] 最长公共前缀以及 A[2:] 与 B[2:] 最长公共前缀时产生的。
+    //
+    //我们希望优化这一过程，使得任意一对 A[i] 和 B[j] 都只被比较一次。这样我们自然而然想到利用这一次的比较结果。
+    // 如果 A[i] == B[j]，那么我们知道 A[i:] 与 B[j:] 的最长公共前缀为 A[i + 1:] 与 B[j + 1:] 的最长公共前缀的长度加一，否则我们知道 A[i:] 与 B[j:] 的最长公共前缀为零。
+    //
+    //这样我们就可以提出动态规划的解法：令 dp[i][j] 表示 A[i:] 和 B[j:] 的最长公共前缀，那么答案即为所有 dp[i][j] 中的最大值。
+    // 如果 A[i] == B[j]，那么 dp[i][j] = dp[i + 1][j + 1] + 1，否则 dp[i][j] = 0。
+    //
+    //这里借用了 Python 表示数组的方法，A[i:] 表示数组 A 中索引 i 到数组末尾的范围对应的子数组。
+    //考虑到这里 dp[i][j] 的值从 dp[i + 1][j + 1] 转移得到，所以我们需要倒过来，首先计算 dp[len(A) - 1][len(B) - 1]，最后计算 dp[0][0]。
+    //
+    //时间复杂度： O(N×M)
+    //空间复杂度： O(N×M)
+    //    N 表示数组 A 的长度，M 表示数组 B 的长度。
+    //空间复杂度还可以再优化，利用滚动数组可以优化到 O(min(N,M))
+    public int findLength(int[] A, int[] B) {
+        int n = A.length, m = B.length;
+        int[][] dp = new int[n + 1][m + 1];
+        int ans = 0;
+        for (int i = n - 1; i >= 0; i--) {
+            for (int j = m - 1; j >= 0; j--) {
+                dp[i][j] = A[i] == B[j] ? dp[i + 1][j + 1] + 1 : 0;
+                ans = Math.max(ans, dp[i][j]);
+            }
+        }
+        return ans;
+    }
+
+    //方法二：滑动窗口
+    //我们注意到之所以两位置会比较多次，是因为重复子数组在两个数组中的位置可能不同。以 A = [3, 6, 1, 2, 4], B = [7, 1, 2, 9] 为例，它们的最长重复子数组是 [1, 2]，在 A 与 B 中的开始位置不同。
+    //但如果我们知道了开始位置，我们就可以根据它们将 A 和 B 进行「对齐」，即：
+    //
+    //A = [3, 6, 1, 2, 4]
+    //B =    [7, 1, 2, 9]
+    //           ↑ ↑
+    //我们可以枚举 A 和 B 所有的对齐方式。对齐的方式有两类：第一类为 A 不变，B 的首元素与 A 中的某个元素对齐；第二类为 B 不变，A 的首元素与 B 中的某个元素对齐。
+    // 对于每一种对齐方式，我们计算它们相对位置相同的重复子数组即可。
+    //时间复杂度： O((N+M)×min(N,M))。
+    //空间复杂度： O(1)。
+    public int findLength2(int[] A, int[] B) {
+        int n = A.length, m = B.length;
+        int ret = 0;
+        for (int i = 0; i < n; i++) {
+            int len = Math.min(m, n - i);
+            int maxlen = maxLength(A, B, i, 0, len);
+            ret = Math.max(ret, maxlen);
+        }
+        for (int i = 0; i < m; i++) {
+            int len = Math.min(n, m - i);
+            int maxlen = maxLength(A, B, 0, i, len);
+            ret = Math.max(ret, maxlen);
+        }
+        return ret;
+    }
+
+    public int maxLength(int[] A, int[] B, int addA, int addB, int len) {
+        int ret = 0, k = 0;
+        for (int i = 0; i < len; i++) {
+            if (A[addA + i] == B[addB + i]) {
+                k++;
+            } else {
+                k = 0;
+            }
+            ret = Math.max(ret, k);
+        }
+        return ret;
+    }
+    //方法三：二分查找 + 哈希
+    //比较复杂，没看
+
+    //209. 长度最小的子数组
+    //给定一个含有 n 个正整数的数组和一个正整数 s ，找出该数组中满足其和 ≥ s 的长度最小的连续子数组，并返回其长度。
+    //如果不存在符合条件的连续子数组，返回 0。
+    //示例：
+    //输入：s = 7, nums = [2,3,1,2,4,3]
+    //输出：2
+    //解释：子数组 [4,3] 是该条件下的长度最小的连续子数组。
+    // 
+    //进阶：
+    //如果你已经完成了 O(n) 时间复杂度的解法, 请尝试 O(nlogn) 时间复杂度的解法。
+    //方法一：前缀和
+    //时间复杂度：O(n^2)
+    public int minSubArrayLen(int s, int[] nums) {
+        int[] prefix = new int[nums.length];
+        int sum = 0;
+        for (int i = 0; i < nums.length; i++) {
+            sum += nums[i];
+            prefix[i] = sum;
+        }
+        int result = Integer.MAX_VALUE;
+        for (int i = 0; i < nums.length; i++) {
+            for (int j = i; j < nums.length; j++) {
+                if (prefix[j] - prefix[i] + nums[i] >= s) {
+                    result = Math.min(result, j - i + 1);
+                }
+            }
+        }
+        return result == Integer.MAX_VALUE ? 0 : result;
+    }
+    //方法二：前缀和 + 二分查找
+    //方法一的时间复杂度是 O(n^2)，因为在确定每个子数组的开始下标后，找到长度最小的子数组需要 O(n) 的时间。
+    // 如果使用二分查找，则可以将时间优化到O(logn)。
+    //
+    //为了使用二分查找，需要额外创建一个数组 sums 用于存储数组 nums 的前缀和，其中 sums[i] 表示从 nums[0] 到 nums[i−1] 的元素和。
+    // 得到前缀和之后，对于每个开始下标 i，可通过二分查找得到大于或等于 i 的最小下标 bound，使得sums[bound]−sums[i−1]≥s，并更新子数组的最小长度（此时子数组的长度是 bound−(i−1)）。
+    //
+    //因为这道题保证了数组中每个元素都为正，所以前缀和一定是递增的，这一点保证了二分的正确性。
+    // 如果题目没有说明数组中每个元素都为正，这里就不能使用二分来查找这个位置了。
+
+    //在很多语言中，都有现成的库和函数来为我们实现这里二分查找大于等于某个数的第一个位置的功能，
+    // 比如 C++ 的 lower_bound，Java 中的 Arrays.binarySearch，C# 中的 Array.BinarySearch，Python 中的 bisect.bisect_left。
+    // 但是有时面试官可能会让我们自己实现一个这样的二分查找函数
+    //
+    // 时间复杂度：O(nlogn)，其中 n 是数组的长度。需要遍历每个下标作为子数组的开始下标，遍历的时间复杂度是 O(n)，对于每个开始下标，需要通过二分查找得到长度最小的子数组，二分查找得时间复杂度是 O(logn)，因此总时间复杂度是O(nlogn)。
+    //空间复杂度：O(n)，其中 n 是数组的长度。额外创建数组 sums 存储前缀和。
+    //
+    public int minSubArrayLen2(int s, int[] nums) {
+        int n = nums.length;
+        if (n == 0) {
+            return 0;
+        }
+        int ans = Integer.MAX_VALUE;
+        int[] sums = new int[n + 1];
+        // 为了方便计算，令 size = n + 1
+        // sums[0] = 0 意味着前 0 个元素的前缀和为 0
+        // sums[1] = A[0] 前 1 个元素的前缀和为 A[0]
+        // 以此类推
+        for (int i = 1; i <= n; i++) {
+            sums[i] = sums[i - 1] + nums[i - 1];
+        }
+        for (int i = 1; i <= n; i++) {
+            int target = s + sums[i - 1];
+            //Arrays.binarySearch返回target的位置，如果没有找到返回应该插入的位置：(-(insertion point) - 1)
+            int bound = Arrays.binarySearch(sums, target);
+            if (bound < 0) {
+                bound = -bound - 1;
+            }
+            if (bound <= n) {
+                ans = Math.min(ans, bound - (i - 1));
+            }
+        }
+        return ans == Integer.MAX_VALUE ? 0 : ans;
+    }
+
+    //方法三：双指针
+    //在方法一和方法二中，都是每次确定子数组的开始下标，然后得到长度最小的子数组，因此时间复杂度较高。为了降低时间复杂度，可以使用双指针的方法。
+    //定义两个指针 start 和 end 分别表示子数组的开始位置和结束位置，维护变量 sum 存储子数组中的元素和（即从 nums[start] 到 nums[end] 的元素和）。
+    //
+    //初始状态下，start 和 end 都指向下标 0，sum 的值为 0。
+    //每一轮迭代，将 nums[end] 加到 sum，如果 sum≥s，则更新子数组的最小长度
+    // （此时子数组的长度是 end−start+1），然后将 nums[start] 从 sum 中减去并将 start 右移，直到 sum<s，在此过程中同样更新子数组的最小长度。
+    // 在每一轮迭代的最后，将 end 右移。
+    //时间复杂度：O(n)，其中 n 是数组的长度。指针 start 和 end 最多各移动 n 次。
+    //空间复杂度：O(1)。
+    public int minSubArrayLen3(int s, int[] nums) {
+        int n = nums.length;
+        if (n == 0) {
+            return 0;
+        }
+        int ans = Integer.MAX_VALUE;
+        int start = 0, end = 0;
+        int sum = 0;
+        while (end < n) {
+            sum += nums[end];
+            while (sum >= s) {
+                ans = Math.min(ans, end - start + 1);
+                sum -= nums[start];
+                start++;
+            }
+            end++;
+        }
+        return ans == Integer.MAX_VALUE ? 0 : ans;
+    }
+
+
     public static void main(String[] args) {
 //        System.out.println(firstBadVersion(2126753390));
         System.out.println(guessNumber(10));
