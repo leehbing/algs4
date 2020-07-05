@@ -513,12 +513,76 @@ public class TreeRelated {
     }
 
 
+    //108. 将有序数组转换为二叉搜索树
+    //将一个按照升序排列的有序数组，转换为一棵高度平衡二叉搜索树。
+    //本题中，一个高度平衡二叉树是指一个二叉树每个节点 的左右两个子树的高度差的绝对值不超过 1。
+    //示例:
+    //给定有序数组: [-10,-3,0,5,9],
+    //一个可能的答案是：[0,-3,9,-10,null,5]，它可以表示下面这个高度平衡二叉搜索树：
+    //
+    //      0
+    //     / \
+    //   -3   9
+    //   /   /
+    // -10  5
+    //方法一：中序遍历，总是选择中间位置左边的数字作为根节点
+    //选择中间位置左边的数字作为根节点，则根节点的下标为 mid=(left+right)/2，此处的除法为整数除法。
+    //时间复杂度：O(n)，其中 n 是数组的长度。每个数字只访问一次。
+    //空间复杂度：O(logn)，其中 n 是数组的长度。空间复杂度不考虑返回值，因此空间复杂度主要取决于递归栈的深度，递归栈的深度是 O(logn)。
+    public TreeNode sortedArrayToBST(int[] nums) {
+        return helper(nums, 0, nums.length - 1);
+    }
+
+    public TreeNode helper(int[] nums, int left, int right) {
+        if (left > right) {
+            return null;
+        }
+        // 总是选择中间位置左边的数字作为根节点
+        int mid = (left + right) / 2;
+        TreeNode root = new TreeNode(nums[mid]);
+        root.left = helper(nums, left, mid - 1);
+        root.right = helper(nums, mid + 1, right);
+        return root;
+    }
+
+    //方法二：中序遍历，总是选择中间位置右边的数字作为根节点
+    //选择中间位置右边的数字作为根节点，则根节点的下标为 mid=(left+right+1)/2，此处的除法为整数除法。
+    public TreeNode sortedArrayToBST2(int[] nums) {
+        return helper(nums, 0, nums.length - 1);
+    }
+
+    public TreeNode helper2(int[] nums, int left, int right) {
+        if (left > right) {
+            return null;
+        }
+        // 总是选择中间位置右边的数字作为根节点
+        int mid = (left + right + 1) / 2;
+        TreeNode root = new TreeNode(nums[mid]);
+        root.left = helper2(nums, left, mid - 1);
+        root.right = helper2(nums, mid + 1, right);
+        return root;
+    }
+    //方法三：中序遍历，选择任意一个中间位置数字作为根节点
+    //选择任意一个中间位置数字作为根节点，则根节点的下标为 mid=(left+right)/2 和 mid=(left+right+1)/2 两者中随机选择一个，此处的除法为整数除法。
+    Random rand = new Random();
+    public TreeNode sortedArrayToBST3(int[] nums) {
+        return helper3(nums, 0, nums.length - 1);
+    }
+
+    public TreeNode helper3(int[] nums, int left, int right) {
+        if (left > right) {
+            return null;
+        }
+        // 选择任意一个中间位置数字作为根节点
+        int mid = (left + right + rand.nextInt(2)) / 2;
+        TreeNode root = new TreeNode(nums[mid]);
+        root.left = helper3(nums, left, mid - 1);
+        root.right = helper3(nums, mid + 1, right);
+        return root;
+    }
 
 
-
-
-
-    public static void main(String[] args){
+    public static void main(String[] args) {
 
     }
 }
