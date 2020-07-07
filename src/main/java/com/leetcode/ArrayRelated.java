@@ -498,6 +498,110 @@ public class ArrayRelated {
         return result;
     }
 
+    //692. 前K个高频单词
+    //给一非空的单词列表，返回前 k 个出现次数最多的单词。
+    //
+    //返回的答案应该按单词出现频率由高到低排序。如果不同的单词有相同出现频率，按字母顺序排序。
+    //
+    //示例 1：
+    //输入: ["i", "love", "leetcode", "i", "love", "coding"], k = 2
+    //输出: ["i", "love"]
+    //解析: "i" 和 "love" 为出现次数最多的两个单词，均为2次。
+    //    注意，按字母顺序 "i" 在 "love" 之前。
+    // 
+    //示例 2：
+    //
+    //输入: ["the", "day", "is", "sunny", "the", "the", "the", "sunny", "is", "is"], k = 4
+    //输出: ["the", "is", "sunny", "day"]
+    //解析: "the", "is", "sunny" 和 "day" 是出现次数最多的四个单词，
+    //    出现次数依次为 4, 3, 2 和 1 次。
+    //方法：最小堆
+    //复杂度分析
+    //时间复杂度： O(Nlogk)。其中 N 是 words 的长度。我们用 O(N) 的时间计算每个单词的频率，然后将 N 个单词添加到堆中，添加每个单词的时间为O(logk) 。
+    // 最后，我们从堆中弹出最多 k 次。因为 k≤N 的值，总共是 O(Nlogk)。
+    //空间复杂度：O(N)，用于存储我们计数的空间
+    //
+    public List<String> topKFrequent(String[] words, int k) {
+        Map<String, Integer> map = new HashMap<String, Integer>();
+        for (String word : words) {
+            map.put(word, map.getOrDefault(word, 0) + 1);
+        }
+
+        PriorityQueue<String> priorityQueue = new PriorityQueue<String>(k + 1, new Comparator<String>() {
+            @Override
+            public int compare(String word1, String word2) {
+                return map.get(word1).compareTo(map.get(word2)) == 0 ? word2.compareTo(word1) : map.get(word1).compareTo(map.get(word2));
+//                return ((Comparable<String>) map.get(key1)).compareTo(map.get(key2);
+            }
+        });
+
+        for (String word : map.keySet()) {
+            priorityQueue.add(word);
+            if (priorityQueue.size() > k) {
+                priorityQueue.remove();
+            }
+        }
+        // build output list
+        List<String> top_k = new ArrayList<>();
+        while (!priorityQueue.isEmpty())
+            top_k.add(priorityQueue.poll());
+        Collections.reverse(top_k); //倒序
+
+        return top_k;
+    }
+
+    //973. 最接近原点的 K 个点
+    //我们有一个由平面上的点组成的列表 points。需要从中找出 K 个距离原点 (0, 0) 最近的点。
+    //
+    //（这里，平面上两点之间的距离是欧几里德距离。）
+    //
+    //你可以按任何顺序返回答案。除了点坐标的顺序之外，答案确保是唯一的。
+    //
+    // 
+    //
+    //示例 1：
+    //输入：points = [[1,3],[-2,2]], K = 1
+    //输出：[[-2,2]]
+    //解释：
+    //(1, 3) 和原点之间的距离为 sqrt(10)，
+    //(-2, 2) 和原点之间的距离为 sqrt(8)，
+    //由于 sqrt(8) < sqrt(10)，(-2, 2) 离原点更近。
+    //我们只需要距离原点最近的 K = 1 个点，所以答案就是 [[-2,2]]。
+    //示例 2：
+    //
+    //输入：points = [[3,3],[5,-1],[-2,4]], K = 2
+    //输出：[[3,3],[-2,4]]
+    //（答案 [[-2,4],[3,3]] 也会被接受。）
+    //
+    //方法一：最小堆
+    public int[][] kClosest(int[][] points, int K) {
+
+        PriorityQueue<Integer> priorityQueue = new PriorityQueue<Integer>(K + 1, new Comparator<Integer>() {
+            @Override
+            public int compare(Integer index1, Integer index2) {
+                return Math.sqrt(Math.pow(points[index1][0], 2) + Math.pow(points[index1][1], 2)) > Math.sqrt(Math.pow(points[index2][0], 2) + Math.pow(points[index2][1], 2)) ? -1 : 1;
+
+            }
+        });
+
+        for (int index = 0; index < points.length; index++) {
+            priorityQueue.add(index);
+            if (priorityQueue.size() > K) {
+                priorityQueue.remove();
+            }
+        }
+        // build output list
+        int[][] top_k = new int[K][2];
+        int i = 0;
+        while (!priorityQueue.isEmpty()) {
+            top_k[i] = points[(priorityQueue.poll())];
+            i++;
+        }
+
+        return top_k;
+    }
+
+
     //324. 摆动排序 II
     //给定一个无序的数组 nums，将它重新排列成 nums[0] < nums[1] > nums[2] < nums[3]... 的顺序。
     //
