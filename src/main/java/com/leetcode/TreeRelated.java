@@ -562,9 +562,11 @@ public class TreeRelated {
         root.right = helper2(nums, mid + 1, right);
         return root;
     }
+
     //方法三：中序遍历，选择任意一个中间位置数字作为根节点
     //选择任意一个中间位置数字作为根节点，则根节点的下标为 mid=(left+right)/2 和 mid=(left+right+1)/2 两者中随机选择一个，此处的除法为整数除法。
     Random rand = new Random();
+
     public TreeNode sortedArrayToBST3(int[] nums) {
         return helper3(nums, 0, nums.length - 1);
     }
@@ -581,6 +583,91 @@ public class TreeRelated {
         return root;
     }
 
+
+    //112. 路径总和
+    //给定一个二叉树和一个目标和，判断该树中是否存在根节点到叶子节点的路径，这条路径上所有节点值相加等于目标和。
+    //说明: 叶子节点是指没有子节点的节点。
+    //
+    //示例: 
+    //给定如下二叉树，以及目标和 sum = 22，
+    //              5
+    //             / \
+    //            4   8
+    //           /   / \
+    //          11  13  4
+    //         /  \      \
+    //        7    2      1
+    //返回 true, 因为存在目标和为 22 的根节点到叶子节点的路径 5->4->11->2。
+    //方法一：递归
+    //假定从根节点到当前节点的值之和为 val，我们可以将这个大问题转化为一个小问题：是否存在从当前节点的子节点到叶子的路径，满足其路径和为 sum - val。
+    //不难发现这满足递归的性质，若当前节点就是叶子节点，那么我们直接判断 sum 是否等于 val 即可（因为路径和已经确定，就是当前节点的值，我们只需要判断该路径和是否满足条件）。
+    // 若当前节点不是叶子节点，我们只需要递归地询问它的子节点是否能满足条件即可。
+    //复杂度分析
+    //时间复杂度：O(N)，其中 N 是树的节点数。对每个节点访问一次。
+    //空间复杂度：O(H)，其中 H 是树的高度。空间复杂度主要取决于递归时栈空间的开销，最坏情况下，树呈现链状，空间复杂度为 O(N)。
+    // 平均情况下树的高度与节点数的对数正相关，空间复杂度为 O(logN)。
+    public boolean hasPathSum(TreeNode root, int sum) {
+        if (root == null) {
+            return false;
+        }
+        if (root.left == null && root.right == null) {
+            return sum == root.val;
+        }
+        return hasPathSum(root.left, sum - root.val) || hasPathSum(root.right, sum - root.val);
+    }
+
+    //437. 路径总和 III
+    //给定一个二叉树，它的每个结点都存放着一个整数值。
+    //找出路径和等于给定数值的路径总数。
+    //路径不需要从根节点开始，也不需要在叶子节点结束，但是路径方向必须是向下的（只能从父节点到子节点）。
+    //二叉树不超过1000个节点，且节点数值范围是 [-1000000,1000000] 的整数。
+    //
+    //示例：
+    //root = [10,5,-3,3,2,null,11,3,-2,null,1], sum = 8
+    //
+    //      10
+    //     /  \
+    //    5   -3
+    //   / \    \
+    //  3   2   11
+    // / \   \
+    //3  -2   1
+    //
+    //返回 3。和等于 8 的路径有:
+    //1.  5 -> 3
+    //2.  5 -> 2 -> 1
+    //3.  -3 -> 11
+
+    //方法：递归
+    //接下来，我们来考虑再上升的一个层次，题目要求 路径不需要从根节点开始，也不需要在叶子节点结束，但是路径方向必须是向下的（只能从父节点到子节点） 。
+    // 这就要求我们只需要去求三部分即可：
+    //      以当前节点作为头结点的路径数量
+    //      以当前节点的左孩子作为头结点的路径数量
+    //      以当前节点的右孩子作为头结点的路径数量
+    //将这三部分之和作为最后结果即可。
+    //
+    //最后的问题是：我们应该如何去求以当前节点作为头结点的路径的数量？
+    // 这里依旧是按照树的遍历方式模板，每到一个节点让sum-root.val，并判断sum是否为0，如果为零的话，则找到满足条件的一条路径。
+    //
+    public int pathSum(TreeNode root, int sum) {
+        if (root == null) {
+            return 0;
+        }
+        int result = countPath(root, sum);
+        int a = pathSum(root.left, sum);
+        int b = pathSum(root.right, sum);
+        return result + a + b;
+
+    }
+
+    public int countPath(TreeNode root, int sum) {
+        if (root == null) {
+            return 0;
+        }
+        sum = sum - root.val;
+        int result = sum == 0 ? 1 : 0;
+        return result + countPath(root.left, sum) + countPath(root.right, sum);
+    }
 
     public static void main(String[] args) {
 
