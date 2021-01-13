@@ -436,5 +436,61 @@ public class LinkedListRelated {
     }
 
 
+    //83. 删除排序链表中的重复元素
+    //给定一个排序链表，删除所有重复的元素，使得每个元素只出现一次。
+    //
+    //示例 1:
+    //输入: 1->1->2
+    //输出: 1->2
+    //示例 2:
+    //输入: 1->1->2->3->3
+    //输出: 1->2->3
+
+    //复杂度分析
+    //时间复杂度：O(n)，因为列表中的每个结点都检查一次以确定它是否重复，所以总运行时间为 O(n)，其中 n 是列表中的结点数。
+    //空间复杂度：O(1)，没有使用额外的空间。
+    public ListNode deleteDuplicates(ListNode head) {
+        if (head == null) return head;
+        ListNode p0 = head;
+        ListNode p1 = head.next;
+        while (p1 != null) {
+            if (p0.val == p1.val) {
+                p0.next = p1.next;
+                p1 = p1.next;
+            } else {
+                p0 = p1;
+                p1 = p1.next;
+            }
+        }
+
+        return head;
+    }
+
+    //面试题 02.02. 返回倒数第 k 个节点
+    //实现一种算法，找出单向链表中倒数第 k 个节点。返回该节点的值。
+    //
+    //注意：本题相对原题稍作改动
+    //示例：
+    //输入： 1->2->3->4->5 和 k = 2
+    //输出： 4
+    //1，双指针求解
+    //这题要求链表的倒数第k个节点，最简单的方式就是使用两个指针，第一个指针先移动k步，然后第二个指针再从头开始，
+    // 这个时候这两个指针同时移动（都只移动一个节点），当第一个指针到链表的末尾的时候，返回第二个指针即可。
+    //复杂度：O(n)
+    public int kthToLast(ListNode head, int k) {
+        ListNode first = head;
+        ListNode second = head;
+        //第一个指针先走k步
+        while (k-- > 0) {
+            first = first.next;
+        }
+        //然后两个指针在同时前进
+        while (first != null) {
+            first = first.next;
+            second = second.next;
+        }
+        return second.val;
+    }
+
 
 }
